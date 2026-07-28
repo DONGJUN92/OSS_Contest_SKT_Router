@@ -28,6 +28,10 @@ from src.submission import SubmissionRouter
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "eval" / "results"
+#: ★ D61: 배포 기본값은 5-fold × 3반복(=15배 적합)이다. 이 프로브는 **두 실데이터에서
+#: 게이트가 끝까지 도는지**를 보이는 예행연이므로 축소 구성으로 돈다. 실데이터 수령 시
+#: `python -m src.gate` 는 기본값(5×3)으로 돈다 — 그 차이를 아티팩트에 기록한다.
+GATE_CV = {"n_splits": 3, "n_repeats": 2}
 TIERS = ["fast", "balanced", "premium"]
 
 
@@ -95,7 +99,7 @@ def branch_textworld(nf_seed=0):
     te = folds[0]
     tr = np.setdiff1d(np.arange(ds.n), te)
     dec, routers = run_gate(ds, cfg, tr, tiers=TIERS, meta=meta, seed=nf_seed,
-                            lpb_kwargs={"use_domain": False})
+                            lpb_kwargs={"use_domain": False}, **GATE_CV)
     return cfg, ds, tr, te, dec, routers
 
 
@@ -115,7 +119,7 @@ def branch_routerbench(subset=2500):
     tr, te = perm[:k], perm[k:]
     vm = meta.get("verifier_meta")
     dec, routers = run_gate(ds, cfg, tr, tiers=TIERS, meta=vm, seed=0,
-                            lpb_kwargs={"use_domain": False})
+                            lpb_kwargs={"use_domain": False}, **GATE_CV)
     return cfg, ds, tr, te, dec, routers
 
 
@@ -150,6 +154,7 @@ def main(skip_bench=False):
                                       "(재계산하려면 --bench 없이 eval/probe_gate.py 실행).")
         except Exception:                        # 손상된 파일이면 그냥 새로 쓴다
             pass
+    result["gate_cv"] = GATE_CV
     result["note"] = ("Phase 18. 실데이터 미수령 상태에서 게이트를 임계값 양쪽 실데이터로 "
                       "실제 통과시킨 예행연. 예측층=AUC, 결정층=train 내 직접 비교(권위).")
     json.dump(result, open(OUT / "probe_gate.json", "w", encoding="utf-8"),

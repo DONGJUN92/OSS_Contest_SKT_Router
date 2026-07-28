@@ -145,11 +145,11 @@
   "cascade_budget": 0.6644,
   "cascade_routing": 0.713,
   "learned": 0.7146,
-  "meta": 0.7146,
+  "meta": 0.722,
   "lpb-submitted": 0.7166
  },
  "meta_picks": {
-  "fast": "learned",
+  "fast": "lpb-submitted",
   "balanced": "learned",
   "premium": "learned"
  },

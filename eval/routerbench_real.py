@@ -271,20 +271,29 @@ def main(subset=None, per_bench=False, observation="noisy", with_router=False):
         comp["cascade_budget"] += tw[tname] * q_cbud
         comp["cascade_routing"] += tw[tname] * q_cr
         comp["learned"] += tw[tname] * q_lrn
-        q_sub = None
+        q_sub = q_sub_sub = None
         if with_router:                                   # D56: 제출 대상 그 자체
             r_sub = _submitted_router(ds, tr, tname, cfg_like)
-            q_sub = run_tier(ds, te, r_sub.policy(), tname, b_te).mean_quality
+            p_sub = r_sub.policy()
+            q_sub = run_tier(ds, te, p_sub, tname, b_te).mean_quality
             comp["lpb-submitted"] += tw[tname] * q_sub
+            # ★ D59: 메타 선택기 후보에 **제출 대상을 넣는다.** D56 을 고친 뒤에도 메타는
+            # 후보 목록에 제출 대상이 없어 learned 를 3/3 골랐다 — 즉 "무엇이 이기는지 데이터가
+            # 고르게 한다"는 구조가 **정작 이기는 후보를 볼 수 없었다.** 선택은 train sub 로만
+            # 하므로 테스트 미접촉 원칙은 유지된다.
+            q_sub_sub = run_tier(ds, sub, p_sub, tname, b_sub).mean_quality
         # per-tier 메타 선택 (train sub 품질로 후보 중 선택, 테스트 미접촉)
         subq = {"lpb-mg": run_tier(ds, sub, p_mg, "x", b_sub).mean_quality, "cascade": bq,
                 "cascade_budget": bbq,
                 "cascade_routing": run_tier(ds, sub, p_cr, "x", b_sub).mean_quality,
                 "learned": run_tier(ds, sub, p_lrn, "x", b_sub).mean_quality}
+        test_q = {"lpb-mg": q_mg, "cascade": q_cas, "cascade_budget": q_cbud,
+                  "cascade_routing": q_cr, "learned": q_lrn}
+        if q_sub_sub is not None:                         # D59: 제출 대상도 후보다
+            subq["lpb-submitted"] = q_sub_sub
+            test_q["lpb-submitted"] = q_sub
         pick = max(subq, key=subq.get)
-        comp["meta"] += tw[tname] * {"lpb-mg": q_mg, "cascade": q_cas,
-                                     "cascade_budget": q_cbud, "cascade_routing": q_cr,
-                                     "learned": q_lrn}[pick]
+        comp["meta"] += tw[tname] * test_q[pick]
         meta_picks[tname] = pick
         print(f"    {tname:<10} LPB {q_lpb:.4f}  LPB-mg {q_mg:.4f}  cascade {q_cas:.4f}  "
               f"cascade-bud {q_cbud:.4f}  cascade-rout {q_cr:.4f}  "
