@@ -59,6 +59,10 @@ SE_K = 1.0
 #: 큰 결정 절차**였다. k-fold 로 모든 train 쿼리를 정확히 한 번씩 held-out 으로 쓰면 유효
 #: 표본이 100% 가 되어 SE 가 약 √(1/0.21) ≈ 2.2배 줄어든다.
 N_SPLITS = 5
+#: 교차검증 반복 횟수 (D61). k-fold 는 표본을 키우지만 **분할의 운**은 남는다 —
+#: 한 번의 불운한 셔플이 배포 정책을 뒤집을 수 있다. 서로 다른 셔플로 반복하고
+#: '반복 과반에서 같은 대안이 이길 것'을 채택 요건에 추가해 그 위험을 없앤다.
+N_REPEATS = 3
 
 
 @dataclass
@@ -143,7 +147,8 @@ def _candidates(ds, cfg, idx, tier, seed, lpb_kwargs):
 def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
              threshold: float = BREAK_EVEN_AUC, margin: float = SELECT_MARGIN,
              out_path=None, lpb_kwargs=None, apply_verifier: bool = True,
-             se_k: float = SE_K, n_splits: int = N_SPLITS):
+             se_k: float = SE_K, n_splits: int = N_SPLITS,
+             n_repeats: int = N_REPEATS):
     """게이트 실행 → (GateDecision, {tier: 배포 라우터}).
 
     apply_verifier=True 이고 meta 가 있으면, 측정 과정에서 적합한 검증기 행렬을 `ds.verifier`
@@ -151,6 +156,10 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
 
     n_splits (D57): 결정층 교차검증 fold 수. 단일 70/30 분할 대비 유효 표본이 k 배가 되어
     쌍대 SE 가 약 √k 배 줄어든다. 비용도 k 배지만 배포 정책을 정하는 단 한 번의 결정이다.
+
+    n_repeats (D61): 서로 다른 셔플로 교차검증을 반복하는 횟수. k-fold 는 표본 크기를
+    키우지만 **분할의 운**은 남는다. 대안 채택에 "반복 과반에서 승리" 요건을 추가해
+    한 번의 불운한 셔플이 배포 정책을 뒤집는 일을 막는다.
     """
     from .harness import run_tier, tier_budgets
     from .router import LPBRouter
@@ -188,29 +197,43 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
     #   · 각 fold 에서 후보를 **그 fold 를 뺀 데이터로 적합**하므로 여전히 out-of-sample 이다.
     #   · 쌍대 차이는 같은 쿼리에 대한 정책 간 차이를 fold 를 가로질러 이어 붙여 만든다.
     # 비용은 k 배지만, 배포 정책을 고르는 단 한 번의 결정이므로 정당하다.
-    rng = np.random.default_rng(1000 + seed)
-    perm = rng.permutation(train_idx)
+    # ★ D61: **반복 교차검증 + 반복 간 일치 요건.** k-fold 는 표본을 키워 SE 를 줄이지만
+    # **분할 자체의 운**은 남는다 — 한 번의 불운한 셔플이 배포 정책을 뒤집을 수 있다.
+    # 그래서 서로 다른 셔플로 R 번 반복하고, 대안을 채택하려면 두 조건을 **모두** 넘게 한다:
+    #   ① 풀링한 전체 표본에서 격차 > max(margin, se_k·SE)        (크기 요건)
+    #   ② 반복 과반에서 같은 대안이 이김                           (안정성 요건)
+    # ②가 없으면 "우연히 이긴 한 번"이 정책을 바꾼다 — D21 의 교훈을 분할 축에 적용한 것이다.
     kf = max(2, int(n_splits))
-    parts = np.array_split(perm, kf)
+    reps = max(1, int(n_repeats))
     per_tier, chosen = {}, {}
     for tier in tiers:
-        # 후보별 per-query 결과를 fold 를 가로질러 누적 (쿼리 순서는 parts 순서 그대로)
-        acc: dict[str, list] = {}
-        for f in range(kf):
-            sel = parts[f]
-            fit = np.concatenate([parts[g] for g in range(kf) if g != f])
-            cands, _ = _candidates(ds, cfg, fit, tier, seed, lpb_kwargs)
-            b_sel = tier_budgets(ds, sel, cfg)[tier]
-            for name, pol in cands.items():
-                r = run_tier(ds, sel, pol, tier, b_sel)
-                acc.setdefault(name, []).append(np.asarray(r.per_query, dtype=float))
-        pq = {n: np.concatenate(v) for n, v in acc.items()}
+        pooled: dict[str, list] = {}
+        rep_winners = []
+        for rep in range(reps):
+            rng = np.random.default_rng(1000 + seed + 7919 * rep)   # 반복마다 다른 셔플
+            parts = np.array_split(rng.permutation(train_idx), kf)
+            acc: dict[str, list] = {}
+            for f in range(kf):
+                sel = parts[f]
+                fit = np.concatenate([parts[g] for g in range(kf) if g != f])
+                cands, _ = _candidates(ds, cfg, fit, tier, seed, lpb_kwargs)
+                b_sel = tier_budgets(ds, sel, cfg)[tier]
+                for name, pol in cands.items():
+                    r = run_tier(ds, sel, pol, tier, b_sel)
+                    acc.setdefault(name, []).append(np.asarray(r.per_query, dtype=float))
+            rq = {n: float(np.concatenate(v).mean()) for n, v in acc.items()}
+            rep_winners.append(max(rq, key=rq.get))                 # 이 반복의 승자
+            for n, v in acc.items():
+                pooled.setdefault(n, []).extend(v)
+        pq = {n: np.concatenate(v) for n, v in pooled.items()}
         q = {n: float(v.mean()) for n, v in pq.items()}
         best_alt = max((n for n in q if n != "lpb"), key=lambda n: q[n])
         diff = pq[best_alt] - pq["lpb"]
         se = float(diff.std(ddof=1) / np.sqrt(len(diff))) if len(diff) > 1 else float("inf")
         need = max(margin, se_k * se)
-        pick = best_alt if (q[best_alt] - q["lpb"]) > need else "lpb"
+        wins = sum(1 for w in rep_winners if w == best_alt)
+        stable = wins * 2 > reps                                    # 과반 반복에서 승리
+        pick = best_alt if ((q[best_alt] - q["lpb"]) > need and stable) else "lpb"
         per_tier[tier] = {n: round(v, 4) for n, v in q.items()}
         per_tier[tier]["_best_alt"] = best_alt
         per_tier[tier]["_paired_se"] = round(se, 4)
@@ -218,8 +241,13 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
         per_tier[tier]["_observed_gap"] = round(q[best_alt] - q["lpb"], 4)
         per_tier[tier]["_n_eval"] = int(len(diff))
         per_tier[tier]["_n_splits"] = kf
+        per_tier[tier]["_n_repeats"] = reps
+        per_tier[tier]["_rep_winners"] = rep_winners
+        per_tier[tier]["_alt_win_repeats"] = f"{wins}/{reps}"
+        per_tier[tier]["_stable"] = bool(stable)
         chosen[tier] = pick
-    notes.append(f"결정층: {kf}-fold 교차검증 쌍대 비교 (유효 표본 = train 전체, D57)")
+    notes.append(f"결정층: {kf}-fold × {reps}회 반복 교차검증. 대안 채택 = 크기(>max(margin,"
+                 f"{se_k}×SE)) **및** 안정성(반복 과반 승리) 동시 충족 (D57·D61)")
     dec = GateDecision(verifier_auc=None if auc is None else round(float(auc), 4),
                        threshold=threshold, predicted=predicted,
                        per_tier_scores=per_tier, chosen=chosen, notes=notes)

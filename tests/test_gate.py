@@ -15,6 +15,10 @@ import numpy as np
 
 from tests.test_packaging import _tiny_dataset, MIN_CFG
 
+#: D61: 결정층은 기본 5-fold × 3반복(=15배 적합)이다. 회귀 테스트는 **기구가
+#: 도는지**만 확인하면 되므로 최소 구성으로 낮춘다 (기본값 검증은 별도 테스트).
+FAST_CV = {"n_splits": 2, "n_repeats": 2}
+
 
 def _ds():
     ds = _tiny_dataset(n=420, seed=3)
@@ -28,7 +32,7 @@ def test_gate_runs_and_returns_deployable_routers():
     from src.harness import tier_budgets
     ds, tr, te = _ds()
     dec, routers = run_gate(ds, MIN_CFG, tr, tiers=["fast"], meta=None,
-                            lpb_kwargs={"use_domain": False})
+                            lpb_kwargs={"use_domain": False}, **FAST_CV)
     assert set(routers) == {"fast"}
     assert dec.chosen["fast"] in ("lpb", "learned", "cascade_routing")
     assert dec.deploy in ("lpb", "selective")
@@ -60,7 +64,7 @@ def test_gate_records_required_margin_from_paired_se():
     from src.gate import run_gate
     ds, tr, te = _ds()
     dec, _ = run_gate(ds, MIN_CFG, tr, tiers=["fast"], meta=None,
-                      lpb_kwargs={"use_domain": False})
+                      lpb_kwargs={"use_domain": False}, **FAST_CV)
     s = dec.per_tier_scores["fast"]
     assert s["_paired_se"] >= 0.0
     assert s["_required_margin"] >= min(0.01, s["_paired_se"])
@@ -79,7 +83,7 @@ def test_prediction_layer_has_no_authority():
     picks = []
     for thr in (0.0, 1.0):
         dec, _ = run_gate(ds, MIN_CFG, tr, tiers=["fast"], meta=None, threshold=thr,
-                          lpb_kwargs={"use_domain": False})
+                          lpb_kwargs={"use_domain": False}, **FAST_CV)
         picks.append((dec.predicted, dec.chosen["fast"]))
     assert picks[0][0] != picks[1][0], "임계값이 예측층을 바꿔야 한다 (테스트 전제)"
     assert picks[0][1] == picks[1][1], "예측층이 결정을 바꿨다 — 결정권이 새고 있다"
@@ -90,6 +94,47 @@ def test_infinite_se_k_pins_lpb():
     from src.gate import run_gate
     ds, tr, te = _ds()
     dec, routers = run_gate(ds, MIN_CFG, tr, tiers=["fast"], meta=None, se_k=1e9,
-                            lpb_kwargs={"use_domain": False})
+                            lpb_kwargs={"use_domain": False}, **FAST_CV)
     assert dec.chosen["fast"] == "lpb" and dec.deploy == "lpb"
     assert type(routers["fast"]).__name__ == "LPBRouter"
+
+
+def test_defaults_are_repeated_cross_validation():
+    """★ D57/D61: 기본값이 실제로 **반복 교차검증**이어야 한다 (테스트는 FAST_CV 로 낮춰
+    돌지만, 배포 기본값이 단일 분할로 되돌아가면 이 테스트가 잡는다)."""
+    from src import gate
+    assert gate.N_SPLITS >= 5, "결정층 fold 수가 5 미만이면 분해능 개선이 무효"
+    assert gate.N_REPEATS >= 3, "반복이 3 미만이면 '과반 승리' 안정성 요건이 의미를 잃는다"
+    import inspect
+    sig = inspect.signature(gate.run_gate).parameters
+    assert sig["n_splits"].default == gate.N_SPLITS
+    assert sig["n_repeats"].default == gate.N_REPEATS
+
+
+def test_decision_layer_records_stability_evidence():
+    """대안 채택은 **크기 + 안정성** 두 조건을 모두 넘어야 하고, 그 근거가 기록돼야 한다."""
+    from src.gate import run_gate
+    ds, tr, te = _ds()
+    dec, _ = run_gate(ds, MIN_CFG, tr, tiers=["fast"], meta=None,
+                      lpb_kwargs={"use_domain": False}, **FAST_CV)
+    s = dec.per_tier_scores["fast"]
+    assert s["_n_repeats"] == FAST_CV["n_repeats"]
+    assert s["_n_splits"] == FAST_CV["n_splits"]
+    assert len(s["_rep_winners"]) == FAST_CV["n_repeats"]
+    assert isinstance(s["_stable"], bool)
+    # 유효 표본은 (반복 × train 전체) 규모여야 한다 — 단일 30% 분할이면 훨씬 작다
+    assert s["_n_eval"] >= FAST_CV["n_repeats"] * int(0.9 * len(tr))
+    # 불안정하면(과반 미승리) 반드시 lpb 를 유지해야 한다
+    if not s["_stable"]:
+        assert dec.chosen["fast"] == "lpb", "불안정한 승자로 정책을 바꿨다"
+
+
+def test_stability_requirement_can_block_a_large_gap():
+    """se_k=0·margin=0 으로 크기 요건을 사실상 없애도, 안정성 요건이 남아야 한다."""
+    from src.gate import run_gate
+    ds, tr, te = _ds()
+    dec, _ = run_gate(ds, MIN_CFG, tr, tiers=["fast"], meta=None, se_k=0.0, margin=0.0,
+                      lpb_kwargs={"use_domain": False}, **FAST_CV)
+    s = dec.per_tier_scores["fast"]
+    if s["_observed_gap"] > 0 and not s["_stable"]:
+        assert dec.chosen["fast"] == "lpb", "크기만 보고 불안정한 대안을 채택했다"
