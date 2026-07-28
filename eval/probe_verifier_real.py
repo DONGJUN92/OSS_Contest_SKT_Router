@@ -138,11 +138,63 @@ def main(n_prompts=1500, dim=100):
                "FAIL — 증강해도 손익분기 미달. 이 데이터에서는 LPB 의 순차 관측이 "
                "학습형 단일호출 대비 순가치를 내지 못한다고 보고해야 한다")
     print(f"\n  판정: {verdict}  (best {best:.3f} vs gate {BREAK_EVEN})")
+
+    # ─────────── ★ D60: 설계 누수 정량화 — leave-one-benchmark-out ───────────
+    #
+    # 지금까지의 caveat(§3.1 caveat 4): "held-out 은 **적합**에 대해서만 out-of-sample 이고
+    # **특성 설계**에 대해서는 아니다." 특성(`agree_ref`·정규형 일치·STRUCT_CHECKS)은 이
+    # 데이터의 mmlu/arc/hellaswag/gsm8k 응답을 들여다본 뒤 만들어졌다. 무작위 분할은 그
+    # 누수를 재지 못한다 — 같은 도메인이 train 과 test 양쪽에 있기 때문이다.
+    #
+    # 그래서 **도메인 단위로 뺀다**: 한 벤치마크를 통째로 빼고 적합해, 그 벤치마크에서 평가한다.
+    # 설계가 특정 도메인의 형태에 과적합됐다면 그 도메인을 처음 보는 순간 무너져야 한다.
+    # 이 수치가 "설계 누수를 걷어낸 뒤 남는 성능"의 정직한 추정이다.
+    tasks_cell = np.repeat(np.asarray(meta["tasks"]), M)          # 셀 단위 도메인 라벨
+    X_full = variants["+ 상자 원-핫 (= 전체 증강)"]
+    lobo = {}
+    print(f"\n  ── D60: leave-one-benchmark-out (설계 누수 정량화) ──")
+    print(f"  {'벤치마크':<12}{'n_cells':<9}{'무작위분할':<11}{'LOBO':<9}{'Δ':<9}")
+    for b in sorted(set(meta["tasks"])):
+        m_te = tasks_cell == b
+        if m_te.sum() < 200 or (~m_te).sum() < 200:
+            continue
+        yte = yb[m_te]
+        if yte.min() == yte.max():                               # 한쪽 클래스만이면 AUC 무의미
+            continue
+        sv_l = ScoringVerifier(l2=1e-3).fit(X_full[~m_te], yb[~m_te], steps=2500, lr=0.2)
+        a_lobo = auc(sv_l.score(X_full[m_te]), yte)
+        # 같은 셀 집합에 대한 **무작위 분할** 기준값 (동일 평가 대상, 다른 학습 집합)
+        idx_b = np.where(m_te)[0]
+        rng_b = np.random.default_rng(7)
+        half = rng_b.permutation(idx_b)
+        cut = len(half) // 2
+        tr_b = np.concatenate([np.where(~m_te)[0], half[:cut]])   # 다른 도메인 + 이 도메인 절반
+        sv_r = ScoringVerifier(l2=1e-3).fit(X_full[tr_b], yb[tr_b], steps=2500, lr=0.2)
+        a_rand = auc(sv_r.score(X_full[half[cut:]]), yb[half[cut:]])
+        lobo[b] = {"n_cells": int(m_te.sum()), "random_split": round(float(a_rand), 4),
+                   "lobo": round(float(a_lobo), 4),
+                   "delta": round(float(a_lobo - a_rand), 4)}
+        print(f"  {b:<12}{int(m_te.sum()):<9}{a_rand:<11.4f}{a_lobo:<9.4f}"
+              f"{a_lobo - a_rand:<+9.4f}", flush=True)
+    if lobo:
+        mean_d = float(np.mean([v["delta"] for v in lobo.values()]))
+        mean_lobo = float(np.mean([v["lobo"] for v in lobo.values()]))
+        print(f"  {'평균':<12}{'':<9}{'':<11}{mean_lobo:<9.4f}{mean_d:<+9.4f}")
+        print(f"  → 설계 누수 비용 = **{mean_d:+.4f} AUC**. 처음 보는 도메인에서의 검증기 "
+              f"성능은 평균 {mean_lobo:.4f} 이다.")
+        rows_lobo = {"per_benchmark": lobo, "mean_lobo_auc": round(mean_lobo, 4),
+                     "mean_delta_vs_random_split": round(mean_d, 4),
+                     "note": ("특성 설계가 이 데이터를 본 뒤 나왔으므로 무작위 분할은 설계 "
+                              "누수를 재지 못한다. 도메인을 통째로 빼서 '처음 보는 도메인' "
+                              "성능을 잰다 — 이것이 §3.1 caveat 4 의 정량화다.")}
+    else:
+        rows_lobo = {"note": "도메인별 셀 수가 부족해 LOBO 를 수행하지 못했다"}
     OUT.mkdir(parents=True, exist_ok=True)
     json.dump({"n_prompts": n, "n_models": M, "n_cells": int(len(yb)),
                "positive_rate": round(float(yb.mean()), 4), "text_dim": dim,
                "break_even_auc": BREAK_EVEN, "auc": rows, "best": best,
                "gate": "PASS" if best >= BREAK_EVEN else "FAIL", "verdict": verdict,
+               "leave_one_benchmark_out": rows_lobo,
                "note": "실물 RouterBench 0-shot 자유형식 응답. 손익분기는 "
                        "eval/probe_verifier_sensitivity.py 측정값."},
               open(OUT / "probe_verifier_real.json", "w", encoding="utf-8"),

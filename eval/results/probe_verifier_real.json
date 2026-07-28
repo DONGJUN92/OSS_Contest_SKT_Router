@@ -11,13 +11,56 @@
   "+ tail/형식 특성 (도메인 검사 제외)": 0.6627,
   "+ 실도메인 STRUCT_CHECKS": 0.6701,
   "+ 교차모델 답 일치(agree_ref)": 0.8485,
-  "+ 응답 hashing": 0.8575,
-  "+ 프롬프트 hashing": 0.8648,
-  "+ 상자 원-핫 (= 전체 증강)": 0.8673,
+  "+ 응답 hashing": 0.8576,
+  "+ 프롬프트 hashing": 0.8639,
+  "+ 상자 원-핫 (= 전체 증강)": 0.8668,
   "[대조] 상자 원-핫만 (텍스트 무시)": 0.6988
  },
- "best": 0.8673,
+ "best": 0.8668,
  "gate": "PASS",
  "verdict": "PASS — 증강 검증기가 손익분기를 넘겼다",
+ "leave_one_benchmark_out": {
+  "per_benchmark": {
+   "arc": {
+    "n_cells": 616,
+    "random_split": 0.9547,
+    "lobo": 0.958,
+    "delta": 0.0034
+   },
+   "hellaswag": {
+    "n_cells": 4631,
+    "random_split": 0.9101,
+    "lobo": 0.8892,
+    "delta": -0.0209
+   },
+   "mbpp": {
+    "n_cells": 220,
+    "random_split": 0.6285,
+    "lobo": 0.5924,
+    "delta": -0.0361
+   },
+   "mmlu": {
+    "n_cells": 6050,
+    "random_split": 0.8995,
+    "lobo": 0.8072,
+    "delta": -0.0923
+   },
+   "other": {
+    "n_cells": 4279,
+    "random_split": 0.7303,
+    "lobo": 0.5206,
+    "delta": -0.2098
+   },
+   "winogrande": {
+    "n_cells": 704,
+    "random_split": 0.7599,
+    "lobo": 0.7583,
+    "delta": -0.0016
+   }
+  },
+  "mean_lobo_auc": 0.7543,
+  "mean_delta_vs_random_split": -0.0595,
+  "note": "특성 설계가 이 데이터를 본 뒤 나왔으므로 무작위 분할은 설계 누수를 재지 못한다. 도메인을 통째로 빼서 '처음 보는 도메인' 성능을 잰다 — 이것이 §3.1 caveat 4 의 정량화다."
+ },
  "note": "실물 RouterBench 0-shot 자유형식 응답. 손익분기는 eval/probe_verifier_sensitivity.py 측정값."
 }
