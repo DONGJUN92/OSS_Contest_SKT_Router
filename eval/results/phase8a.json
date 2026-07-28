@@ -1,0 +1,22 @@
+{
+ "full": {
+  "auc": 0.8996,
+  "logloss": 0.3532,
+  "ece": 0.0269
+ },
+ "-vote_share": {
+  "auc": 0.887,
+  "logloss": 0.3779,
+  "ece": 0.0408
+ },
+ "-struct": {
+  "auc": 0.7764,
+  "logloss": 0.5272,
+  "ece": 0.0282
+ },
+ "len-only": {
+  "auc": 0.7127,
+  "logloss": 0.6001,
+  "ece": 0.0788
+ }
+}

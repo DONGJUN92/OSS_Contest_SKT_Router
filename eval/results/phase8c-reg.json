@@ -1,0 +1,90 @@
+{
+ "irt": {
+  "fast": {
+   "lpb": 0.925,
+   "std": 0.018,
+   "cascade": 0.3952,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 92.5,
+    "selection_error": 0.0,
+    "early_stop_regret": 4.7,
+    "budget_ceiling": 0.15,
+    "world_ceiling": 2.3,
+    "unanswered": 0.35
+   }
+  },
+  "balanced": {
+   "lpb": 0.976,
+   "std": 0.0059,
+   "cascade": 0.972,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 97.6,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.05,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 2.35,
+    "unanswered": 0.0
+   }
+  },
+  "premium": {
+   "lpb": 0.976,
+   "std": 0.0059,
+   "cascade": 0.976,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 97.6,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.05,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 2.35,
+    "unanswered": 0.0
+   }
+  }
+ },
+ "corr": {
+  "fast": {
+   "lpb": 0.8824,
+   "std": 0.037,
+   "cascade": 0.7678,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 88.24,
+    "selection_error": 0.0,
+    "early_stop_regret": 6.65,
+    "budget_ceiling": 0.4,
+    "world_ceiling": 2.3,
+    "unanswered": 2.41
+   }
+  },
+  "balanced": {
+   "lpb": 0.966,
+   "std": 0.0207,
+   "cascade": 0.966,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 96.59,
+    "selection_error": 0.05,
+    "early_stop_regret": 0.25,
+    "budget_ceiling": 0.2,
+    "world_ceiling": 2.35,
+    "unanswered": 0.55
+   }
+  },
+  "premium": {
+   "lpb": 0.976,
+   "std": 0.0038,
+   "cascade": 0.9765,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 97.6,
+    "selection_error": 0.05,
+    "early_stop_regret": 0.0,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 2.35,
+    "unanswered": 0.0
+   }
+  }
+ }
+}

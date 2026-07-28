@@ -1,0 +1,67 @@
+{
+ "config": "config_ax3.yaml (A.X 3모델)",
+ "n_folds": 5,
+ "summary": {
+  "irt": {
+   "lpb": 0.8306,
+   "lpb-auto": 0.8306,
+   "cascade": 0.5252,
+   "learned": 0.7091,
+   "auto_minus_sigma": 0.0,
+   "auto_minus_learned": 0.1216,
+   "auto_minus_cascade": 0.3055
+  },
+  "specialist": {
+   "lpb": 0.9945,
+   "lpb-auto": 0.9945,
+   "cascade": 0.9945,
+   "learned": 0.882,
+   "auto_minus_sigma": 0.0,
+   "auto_minus_learned": 0.1125,
+   "auto_minus_cascade": 0.0
+  },
+  "corr": {
+   "lpb": 0.8675,
+   "lpb-auto": 0.8675,
+   "cascade": 0.6276,
+   "learned": 0.7837,
+   "auto_minus_sigma": 0.0,
+   "auto_minus_learned": 0.0838,
+   "auto_minus_cascade": 0.2398
+  },
+  "crossing": {
+   "lpb": 0.9599,
+   "lpb-auto": 0.9599,
+   "cascade": 0.792,
+   "learned": 0.791,
+   "auto_minus_sigma": 0.0,
+   "auto_minus_learned": 0.1689,
+   "auto_minus_cascade": 0.1679
+  },
+  "nosignal": {
+   "lpb": 0.881,
+   "lpb-auto": 0.881,
+   "cascade": 0.6467,
+   "learned": 0.7554,
+   "auto_minus_sigma": 0.0,
+   "auto_minus_learned": 0.1256,
+   "auto_minus_cascade": 0.2342
+  },
+  "textworld": {
+   "lpb": 0.7875,
+   "lpb-auto": 0.8022,
+   "cascade": 0.5217,
+   "learned": 0.7695,
+   "auto_minus_sigma": 0.0147,
+   "auto_minus_learned": 0.0328,
+   "auto_minus_cascade": 0.2805
+  }
+ },
+ "samples_per_cell": [
+  1,
+  3,
+  5
+ ],
+ "branch": "Q2=Yes (투표 상자 포함)",
+ "note": "LPB=배포 단일집단, cascade=τ튜닝, learned=DiscLR 단일호출. 3상자에서 LPB 구조 우위 여부. 상세: docs/reflections/phase13.md"
+}

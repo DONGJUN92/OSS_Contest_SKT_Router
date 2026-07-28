@@ -1,0 +1,206 @@
+{
+ "irt": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "tau": 0.4,
+   "mono": false,
+   "risk0": 0.0596,
+   "riskC": 0.1588,
+   "q0": 0.8933,
+   "qC": 0.6551
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": false,
+   "risk0": 0.0099,
+   "riskC": 0.0099,
+   "q0": 0.9727,
+   "qC": 0.9727
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "tau": 0.4,
+   "mono": false,
+   "risk0": 0.0225,
+   "riskC": 0.125,
+   "q0": 0.9525,
+   "qC": 0.68
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": false,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 0.975,
+   "qC": 0.975
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "tau": 0.0,
+   "mono": false,
+   "risk0": 0.0551,
+   "riskC": 0.0551,
+   "q0": 0.9148,
+   "qC": 0.9148
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0025,
+   "riskC": 0.0025,
+   "q0": 0.9674,
+   "qC": 0.9674
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "tau": 0.4,
+   "mono": false,
+   "risk0": 0.0526,
+   "riskC": 0.1454,
+   "q0": 0.9173,
+   "qC": 0.6541
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0025,
+   "riskC": 0.0025,
+   "q0": 0.9699,
+   "qC": 0.9699
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "tau": 0.4,
+   "mono": false,
+   "risk0": 0.0426,
+   "riskC": 0.1003,
+   "q0": 0.9398,
+   "qC": 0.7043
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 0.9825,
+   "qC": 0.9825
+  }
+ ],
+ "specialist": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 1.0,
+   "qC": 1.0
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 1.0,
+   "qC": 1.0
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "tau": 0.0,
+   "mono": false,
+   "risk0": 0.0075,
+   "riskC": 0.0075,
+   "q0": 0.9925,
+   "qC": 0.9925
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 1.0,
+   "qC": 1.0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "tau": 0.0,
+   "mono": false,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 0.9975,
+   "qC": 0.9975
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": false,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 0.9975,
+   "qC": 0.9975
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 1.0,
+   "qC": 1.0
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 1.0,
+   "qC": 1.0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 0.9975,
+   "qC": 0.9975
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "tau": 0.0,
+   "mono": true,
+   "risk0": 0.0,
+   "riskC": 0.0,
+   "q0": 0.9975,
+   "qC": 0.9975
+  }
+ ]
+}

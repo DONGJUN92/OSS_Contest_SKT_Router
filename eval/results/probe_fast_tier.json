@@ -1,0 +1,89 @@
+{
+ "n": 1200,
+ "n_folds": 3,
+ "arms": {
+  "기준 (Phase 17 상태)": {
+   "per_tier": {
+    "fast": 0.3555,
+    "balanced": 0.5809,
+    "premium": 0.7483
+   },
+   "composite": 0.5017,
+   "calls": {
+    "fast": 1.015,
+    "balanced": 1.622,
+    "premium": 2.048
+   },
+   "sigma_neg_fast": 0.7014,
+   "fast_delta_vs_base": "—"
+  },
+  "① λ 세밀격자 (SE 문턱 없이)": {
+   "per_tier": {
+    "fast": 0.3582,
+    "balanced": 0.5809,
+    "premium": 0.7483
+   },
+   "composite": 0.503,
+   "calls": {
+    "fast": 1.03,
+    "balanced": 1.622,
+    "premium": 2.048
+   },
+   "sigma_neg_fast": 0.5108,
+   "fast_delta_vs_base": "+0.0028(0.0020)"
+  },
+  "① λ 세밀격자 + SE 문턱": {
+   "per_tier": {
+    "fast": 0.3555,
+    "balanced": 0.5809,
+    "premium": 0.7427
+   },
+   "composite": 0.5006,
+   "calls": {
+    "fast": 1.008,
+    "balanced": 1.622,
+    "premium": 2.026
+   },
+   "sigma_neg_fast": 0.8457,
+   "fast_delta_vs_base": "+0.0000(0.0020)"
+  },
+  "② p̄ Platt 재보정": {
+   "per_tier": {
+    "fast": 0.3582,
+    "balanced": 0.5823,
+    "premium": 0.7483
+   },
+   "composite": 0.5035,
+   "calls": {
+    "fast": 1.017,
+    "balanced": 1.613,
+    "premium": 2.015
+   },
+   "sigma_neg_fast": 0.6821,
+   "fast_delta_vs_base": "+0.0028(0.0020)"
+  },
+  "①+② 결합 (= 현행 기본값)": {
+   "per_tier": {
+    "fast": 0.3582,
+    "balanced": 0.5823,
+    "premium": 0.7427
+   },
+   "composite": 0.5024,
+   "calls": {
+    "fast": 1.01,
+    "balanced": 1.613,
+    "premium": 1.992
+   },
+   "sigma_neg_fast": 0.8364,
+   "fast_delta_vs_base": "+0.0028(0.0028)"
+  }
+ },
+ "verdict": {
+  "baseline_arm": "기준 (Phase 17 상태)",
+  "baseline_composite": 0.5017,
+  "best_arm": "② p̄ Platt 재보정",
+  "best_composite": 0.5035,
+  "delta": 0.0018,
+  "note": "채택 기준: fast tier 쌍대 차이가 표준오차를 넘어야 한다. 넘지 못하면 기본값 유지 (D21)."
+ }
+}

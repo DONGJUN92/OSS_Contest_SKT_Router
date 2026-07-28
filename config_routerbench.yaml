@@ -1,0 +1,26 @@
+# RouterBench-스타일 예행연 config (Phase 15). 모델 단가는 make_routerbench_style.py와 정합.
+# RouterBench류 현실적 사다리(소형 7B ~ GPT-4급). 실물 RouterBench 값이 아니라 구조 모사.
+seed: 42
+
+models:
+  mistral-7b:   { prefill_price: 0.02, decode_price: 0.04, avg_out_tokens: 180 }
+  mixtral-8x7b: { prefill_price: 0.06, decode_price: 0.12, avg_out_tokens: 210 }
+  llama2-70b:   { prefill_price: 0.10, decode_price: 0.20, avg_out_tokens: 230 }
+  gpt-3.5:      { prefill_price: 0.15, decode_price: 0.30, avg_out_tokens: 200 }
+  gpt-4:        { prefill_price: 0.60, decode_price: 1.20, avg_out_tokens: 260 }
+
+tiers:
+  fast:     { budget_frac: 0.08, weight: 0.5 }
+  balanced: { budget_frac: 0.25, weight: 0.3 }
+  premium:  { budget_frac: 0.60, weight: 0.2 }
+
+cost:
+  prefix_sharing: false
+
+synth:
+  n_domains: 6          # 6 태스크 (gsm8k/mmlu/mbpp/hellaswag/winogrande/mtbench)
+  verifier_noise: 0.18
+
+eval:
+  k_folds: 5
+  cascade_tau_grid: [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]

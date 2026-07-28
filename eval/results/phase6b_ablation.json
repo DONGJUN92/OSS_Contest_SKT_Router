@@ -1,0 +1,16 @@
+{
+ "irt": {
+  "full": 0.9284,
+  "-pacing(static)": 0.892,
+  "-votes(5box)": 0.7525,
+  "-irt(disc)": 0.9366,
+  "-qualityfirst": 0.9189
+ },
+ "specialist": {
+  "full": 0.999,
+  "-pacing(static)": 0.999,
+  "-votes(5box)": 0.8626,
+  "-irt(disc)": 0.999,
+  "-qualityfirst": 0.9708
+ }
+}

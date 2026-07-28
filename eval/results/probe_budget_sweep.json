@@ -1,0 +1,143 @@
+{
+ "0.03": {
+  "floor": 0.1538,
+  "ceiling": 0.3945,
+  "span": 0.2406,
+  "scores": {
+   "lpb": 0.1538,
+   "lpb_abstain": 0.1017,
+   "learned": 0.1538,
+   "cascade_budget": 0.1538,
+   "cascade_routing": 0.1538
+  },
+  "capture_pct": {
+   "lpb": 0.0,
+   "lpb_abstain": -21.7,
+   "learned": 0.0,
+   "cascade_budget": 0.0,
+   "cascade_routing": 0.0
+  },
+  "winner": "lpb"
+ },
+ "0.06": {
+  "floor": 0.3076,
+  "ceiling": 0.5334,
+  "span": 0.2258,
+  "scores": {
+   "lpb": 0.3076,
+   "lpb_abstain": 0.2059,
+   "learned": 0.3076,
+   "cascade_budget": 0.3076,
+   "cascade_routing": 0.3076
+  },
+  "capture_pct": {
+   "lpb": 0.0,
+   "lpb_abstain": -45.0,
+   "learned": 0.0,
+   "cascade_budget": 0.0,
+   "cascade_routing": 0.0
+  },
+  "winner": "lpb"
+ },
+ "0.12": {
+  "floor": 0.3721,
+  "ceiling": 0.7071,
+  "span": 0.335,
+  "scores": {
+   "lpb": 0.4514,
+   "lpb_abstain": 0.4589,
+   "learned": 0.4266,
+   "cascade_budget": 0.4242,
+   "cascade_routing": 0.4464
+  },
+  "capture_pct": {
+   "lpb": 23.7,
+   "lpb_abstain": 25.9,
+   "learned": 16.3,
+   "cascade_budget": 15.6,
+   "cascade_routing": 22.2
+  },
+  "winner": "lpb_abstain"
+ },
+ "0.25": {
+  "floor": 0.3721,
+  "ceiling": 0.8461,
+  "span": 0.474,
+  "scores": {
+   "lpb": 0.5904,
+   "lpb_abstain": 0.5904,
+   "learned": 0.5806,
+   "cascade_budget": 0.5582,
+   "cascade_routing": 0.6153
+  },
+  "capture_pct": {
+   "lpb": 46.1,
+   "lpb_abstain": 46.1,
+   "learned": 44.0,
+   "cascade_budget": 39.3,
+   "cascade_routing": 51.3
+  },
+  "winner": "cascade_routing"
+ },
+ "0.5": {
+  "floor": 0.3721,
+  "ceiling": 0.9231,
+  "span": 0.551,
+  "scores": {
+   "lpb": 0.7393,
+   "lpb_abstain": 0.7393,
+   "learned": 0.6923,
+   "cascade_budget": 0.6997,
+   "cascade_routing": 0.7518
+  },
+  "capture_pct": {
+   "lpb": 66.7,
+   "lpb_abstain": 66.7,
+   "learned": 58.1,
+   "cascade_budget": 59.5,
+   "cascade_routing": 68.9
+  },
+  "winner": "cascade_routing"
+ },
+ "1.0": {
+  "floor": 0.3721,
+  "ceiling": 0.9231,
+  "span": 0.551,
+  "scores": {
+   "lpb": 0.8362,
+   "lpb_abstain": 0.8362,
+   "learned": 0.809,
+   "cascade_budget": 0.7966,
+   "cascade_routing": 0.8586
+  },
+  "capture_pct": {
+   "lpb": 84.2,
+   "lpb_abstain": 84.2,
+   "learned": 79.3,
+   "cascade_budget": 77.0,
+   "cascade_routing": 88.3
+  },
+  "winner": "cascade_routing"
+ },
+ "_verdict": {
+  "winners_by_frac": {
+   "0.03": "lpb",
+   "0.06": "lpb",
+   "0.12": "lpb_abstain",
+   "0.25": "cascade_routing",
+   "0.5": "cascade_routing",
+   "1.0": "cascade_routing"
+  },
+  "lpb_rank_by_frac": [
+   1,
+   1,
+   2,
+   2,
+   2,
+   2
+  ],
+  "lpb_rank_stable": false,
+  "largest_span_frac": "0.5",
+  "note": "달성폭(span)이 큰 frac 이 실제 승부처다. lpb_rank 가 frac 전 구간에서 동일하면 우위가 예산 가정에 의존하지 않는다."
+ }
+}

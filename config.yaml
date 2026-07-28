@@ -1,0 +1,45 @@
+# LPB-Router 단일 설정 파일 (PROJECT_PLAN.md §4)
+# 실데이터 수령(Phase 0 완료) 시 models/costs를 주최측 스펙으로 교체
+
+seed: 42
+
+# 후보 모델 풀 (합성 시뮬레이터용 — 가격은 1k 토큰당, 크기에 비례하는 현실적 프로파일)
+models:
+  tiny-1b:   { prefill_price: 0.01, decode_price: 0.02,  avg_out_tokens: 180 }
+  small-3b:  { prefill_price: 0.03, decode_price: 0.06,  avg_out_tokens: 220 }
+  mid-7b:    { prefill_price: 0.07, decode_price: 0.14,  avg_out_tokens: 260 }
+  large-34b: { prefill_price: 0.34, decode_price: 0.68,  avg_out_tokens: 300 }
+  xl-70b:    { prefill_price: 0.70, decode_price: 1.40,  avg_out_tokens: 320 }
+
+# 예산 tier: budget = frac × (전량 최대모델 호출 시 총비용), 저예산 가중치 높음 (챌린지 규칙)
+tiers:
+  fast:     { budget_frac: 0.08, weight: 0.5 }
+  balanced: { budget_frac: 0.25, weight: 0.3 }
+  premium:  { budget_frac: 0.60, weight: 0.2 }
+
+# 비용 산식 옵션 (Q3 주최측 산식 확인 시 조정)
+cost:
+  # [모델×N표] 투표 상자의 프롬프트 프리필 과금: false=N회(보수적 기본), true=1회(KV-cache
+  # 프리픽스 공유). Q3에서 host가 공유 과금을 확인할 때만 켤 것 — 위험 비대칭(phase13 참조).
+  prefix_sharing: false
+
+# 합성 데이터 (두 세계 — self-reflection: IRT 가정이 맞는 세계와 깨지는 세계를 모두 생성)
+synth:
+  n_queries: 2000
+  n_domains: 4
+  feature_dim: 8
+  verifier_noise: 0.15          # 검증기 관측 잡음 σ
+  # World A (irt): 1D 잠재 난이도 θ가 실제로 존재 — 우리 방법에 유리한 세계
+  irt:
+    a_range: [0.8, 2.2]         # 판별도
+    b_values: [1.2, 0.5, -0.1, -0.9, -1.4]   # 모델별 능력 경계 (작은 모델일수록 높음=약함)
+  # World B (specialist): 도메인 특화 모델이 존재, 1D θ 가정이 깨짐 — 우리 방법에 불리한 세계
+  # (Phase 1 reflection: 천장 효과 방지 위해 기본 정답률 하향 + 난이도 영향 강화)
+  specialist:
+    base_skill: [0.22, 0.34, 0.46, 0.64, 0.76]  # 모델별 기본 정답률
+    specialist_boost: 0.32      # 특화 도메인에서 소형 모델이 얻는 보정 (대형 추월 가능)
+    difficulty_slope: 0.65      # 쿼리 난이도가 정답률에 미치는 영향 (클수록 어려운 세계)
+
+eval:
+  k_folds: 5
+  cascade_tau_grid: [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]   # 베이스라인 ③ threshold 탐색 그리드

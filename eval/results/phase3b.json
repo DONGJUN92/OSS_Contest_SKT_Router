@@ -1,0 +1,816 @@
+{
+ "irt": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.2531,
+   "cost_pct": 100.0,
+   "calls_q": 0.76,
+   "unans": 290
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.469,
+   "cost_pct": 100.0,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.603,
+   "cost_pct": 100.0,
+   "calls_q": 1.81,
+   "unans": 4
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.5806,
+   "cost_pct": 100.0,
+   "calls_q": 1.89,
+   "unans": 133
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.6079,
+   "cost_pct": 100.0,
+   "calls_q": 0.99,
+   "unans": 3
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.7841,
+   "cost_pct": 100.0,
+   "calls_q": 2.25,
+   "unans": 20
+  },
+  {
+   "fold": 0,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9107,
+   "cost_pct": 74.8,
+   "calls_q": 3.0,
+   "unans": 0
+  },
+  {
+   "fold": 0,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.737,
+   "cost_pct": 98.7,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 0,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.8834,
+   "cost_pct": 100.0,
+   "calls_q": 3.44,
+   "unans": 14
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.2375,
+   "cost_pct": 100.0,
+   "calls_q": 0.72,
+   "unans": 291
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.4875,
+   "cost_pct": 97.1,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.65,
+   "cost_pct": 91.1,
+   "calls_q": 1.83,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.6675,
+   "cost_pct": 100.0,
+   "calls_q": 2.04,
+   "unans": 103
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.6325,
+   "cost_pct": 96.0,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.865,
+   "cost_pct": 87.7,
+   "calls_q": 2.35,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9525,
+   "cost_pct": 64.1,
+   "calls_q": 2.89,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.745,
+   "cost_pct": 98.1,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.9525,
+   "cost_pct": 91.9,
+   "calls_q": 3.53,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.1579,
+   "cost_pct": 100.0,
+   "calls_q": 0.55,
+   "unans": 324
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.5414,
+   "cost_pct": 100.0,
+   "calls_q": 0.98,
+   "unans": 9
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.614,
+   "cost_pct": 100.0,
+   "calls_q": 1.91,
+   "unans": 16
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.4787,
+   "cost_pct": 100.0,
+   "calls_q": 1.65,
+   "unans": 174
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.6591,
+   "cost_pct": 92.4,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.8371,
+   "cost_pct": 95.3,
+   "calls_q": 2.45,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9098,
+   "cost_pct": 71.4,
+   "calls_q": 2.99,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.7293,
+   "cost_pct": 100.0,
+   "calls_q": 0.96,
+   "unans": 14
+  },
+  {
+   "fold": 2,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.9023,
+   "cost_pct": 100.0,
+   "calls_q": 3.65,
+   "unans": 2
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.1579,
+   "cost_pct": 100.0,
+   "calls_q": 0.57,
+   "unans": 320
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.4912,
+   "cost_pct": 100.0,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.589,
+   "cost_pct": 100.0,
+   "calls_q": 1.88,
+   "unans": 15
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.5088,
+   "cost_pct": 100.0,
+   "calls_q": 1.76,
+   "unans": 161
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.619,
+   "cost_pct": 100.0,
+   "calls_q": 0.95,
+   "unans": 21
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.7945,
+   "cost_pct": 100.0,
+   "calls_q": 2.39,
+   "unans": 16
+  },
+  {
+   "fold": 3,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9223,
+   "cost_pct": 74.2,
+   "calls_q": 3.05,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.7168,
+   "cost_pct": 98.9,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.9048,
+   "cost_pct": 100.0,
+   "calls_q": 3.6,
+   "unans": 5
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.193,
+   "cost_pct": 100.0,
+   "calls_q": 0.62,
+   "unans": 311
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.4912,
+   "cost_pct": 98.2,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.6266,
+   "cost_pct": 96.7,
+   "calls_q": 1.88,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.6165,
+   "cost_pct": 100.0,
+   "calls_q": 1.99,
+   "unans": 120
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.6366,
+   "cost_pct": 100.0,
+   "calls_q": 1.0,
+   "unans": 1
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.8546,
+   "cost_pct": 100.0,
+   "calls_q": 2.48,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9248,
+   "cost_pct": 71.1,
+   "calls_q": 2.98,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.7318,
+   "cost_pct": 98.2,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.9198,
+   "cost_pct": 100.0,
+   "calls_q": 3.7,
+   "unans": 0
+  }
+ ],
+ "specialist": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.3648,
+   "cost_pct": 100.0,
+   "calls_q": 0.91,
+   "unans": 244
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.6228,
+   "cost_pct": 100.0,
+   "calls_q": 0.99,
+   "unans": 5
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.7171,
+   "cost_pct": 100.0,
+   "calls_q": 1.94,
+   "unans": 38
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.866,
+   "cost_pct": 100.0,
+   "calls_q": 2.3,
+   "unans": 31
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.7494,
+   "cost_pct": 93.9,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.8511,
+   "cost_pct": 100.0,
+   "calls_q": 2.26,
+   "unans": 44
+  },
+  {
+   "fold": 0,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9529,
+   "cost_pct": 48.9,
+   "calls_q": 2.55,
+   "unans": 0
+  },
+  {
+   "fold": 0,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.7618,
+   "cost_pct": 100.0,
+   "calls_q": 0.97,
+   "unans": 11
+  },
+  {
+   "fold": 0,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.8983,
+   "cost_pct": 100.0,
+   "calls_q": 3.67,
+   "unans": 22
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.255,
+   "cost_pct": 100.0,
+   "calls_q": 0.66,
+   "unans": 291
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.6425,
+   "cost_pct": 100.0,
+   "calls_q": 0.96,
+   "unans": 15
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.805,
+   "cost_pct": 100.0,
+   "calls_q": 2.04,
+   "unans": 3
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.9525,
+   "cost_pct": 100.0,
+   "calls_q": 2.36,
+   "unans": 5
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.76,
+   "cost_pct": 96.5,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.9175,
+   "cost_pct": 100.0,
+   "calls_q": 2.29,
+   "unans": 22
+  },
+  {
+   "fold": 1,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.975,
+   "cost_pct": 43.2,
+   "calls_q": 2.42,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.8125,
+   "cost_pct": 100.0,
+   "calls_q": 0.99,
+   "unans": 2
+  },
+  {
+   "fold": 1,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.975,
+   "cost_pct": 94.3,
+   "calls_q": 3.78,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.3734,
+   "cost_pct": 100.0,
+   "calls_q": 0.95,
+   "unans": 230
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.6842,
+   "cost_pct": 99.7,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.8371,
+   "cost_pct": 94.0,
+   "calls_q": 2.02,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.9398,
+   "cost_pct": 81.6,
+   "calls_q": 2.3,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.7769,
+   "cost_pct": 99.8,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.9624,
+   "cost_pct": 83.7,
+   "calls_q": 2.29,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9649,
+   "cost_pct": 36.5,
+   "calls_q": 2.35,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.797,
+   "cost_pct": 96.0,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.9649,
+   "cost_pct": 98.1,
+   "calls_q": 3.84,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.4135,
+   "cost_pct": 100.0,
+   "calls_q": 0.96,
+   "unans": 227
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.6216,
+   "cost_pct": 100.0,
+   "calls_q": 1.0,
+   "unans": 1
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.7744,
+   "cost_pct": 100.0,
+   "calls_q": 1.99,
+   "unans": 15
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.9574,
+   "cost_pct": 97.3,
+   "calls_q": 2.42,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.7043,
+   "cost_pct": 100.0,
+   "calls_q": 0.97,
+   "unans": 12
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.9499,
+   "cost_pct": 93.2,
+   "calls_q": 2.35,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9599,
+   "cost_pct": 42.0,
+   "calls_q": 2.43,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.7744,
+   "cost_pct": 98.6,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.9599,
+   "cost_pct": 89.7,
+   "calls_q": 3.73,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "static-cascade",
+   "quality": 0.2581,
+   "cost_pct": 100.0,
+   "calls_q": 0.67,
+   "unans": 285
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "single-shot",
+   "quality": 0.609,
+   "cost_pct": 100.0,
+   "calls_q": 0.94,
+   "unans": 24
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.782,
+   "cost_pct": 90.6,
+   "calls_q": 2.04,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "static-cascade",
+   "quality": 0.9449,
+   "cost_pct": 100.0,
+   "calls_q": 2.38,
+   "unans": 2
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "single-shot",
+   "quality": 0.7093,
+   "cost_pct": 100.0,
+   "calls_q": 1.0,
+   "unans": 1
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.9499,
+   "cost_pct": 100.0,
+   "calls_q": 2.36,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "premium",
+   "policy": "static-cascade",
+   "quality": 0.9574,
+   "cost_pct": 43.0,
+   "calls_q": 2.4,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "premium",
+   "policy": "single-shot",
+   "quality": 0.7945,
+   "cost_pct": 98.6,
+   "calls_q": 1.0,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "premium",
+   "policy": "pandora-irt",
+   "quality": 0.9373,
+   "cost_pct": 100.0,
+   "calls_q": 3.81,
+   "unans": 6
+  }
+ ]
+}

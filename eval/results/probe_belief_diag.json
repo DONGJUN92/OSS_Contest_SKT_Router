@@ -1,0 +1,17 @@
+{
+ "n_folds": 1,
+ "summary": {
+  "textworld": {
+   "irt-lpb": 0.6734,
+   "disc-lpb": 0.6692,
+   "value-lpb": 0.695,
+   "learned": 0.7635,
+   "value_minus_learned": -0.0685,
+   "value_minus_irt": 0.0216,
+   "disc_minus_irt": -0.0042,
+   "logloss_irt": 0.4379,
+   "logloss_disc": 0.4726
+  }
+ },
+ "note": "Disc-LPB>learned ∧ Disc-LPB>IRT-LPB 이면 원인=belief 예측력 → 개선=적응 신념"
+}

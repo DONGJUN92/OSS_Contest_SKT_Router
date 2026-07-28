@@ -1,0 +1,49 @@
+{
+ "config": "config_ax3.yaml (A.X 3모델)",
+ "n_folds": 5,
+ "summary": {
+  "irt": {
+   "lpb": 0.8292,
+   "cascade": 0.5252,
+   "learned": 0.7091,
+   "lpb_minus_cascade": 0.304,
+   "lpb_minus_learned": 0.1201
+  },
+  "specialist": {
+   "lpb": 0.988,
+   "cascade": 0.9945,
+   "learned": 0.882,
+   "lpb_minus_cascade": -0.0065,
+   "lpb_minus_learned": 0.1059
+  },
+  "corr": {
+   "lpb": 0.8693,
+   "cascade": 0.6276,
+   "learned": 0.7837,
+   "lpb_minus_cascade": 0.2416,
+   "lpb_minus_learned": 0.0856
+  },
+  "crossing": {
+   "lpb": 0.9637,
+   "cascade": 0.792,
+   "learned": 0.791,
+   "lpb_minus_cascade": 0.1717,
+   "lpb_minus_learned": 0.1728
+  },
+  "nosignal": {
+   "lpb": 0.8845,
+   "cascade": 0.6467,
+   "learned": 0.7554,
+   "lpb_minus_cascade": 0.2378,
+   "lpb_minus_learned": 0.1292
+  },
+  "textworld": {
+   "lpb": 0.7504,
+   "cascade": 0.5217,
+   "learned": 0.7695,
+   "lpb_minus_cascade": 0.2287,
+   "lpb_minus_learned": -0.0191
+  }
+ },
+ "note": "LPB=배포 단일집단, cascade=τ튜닝, learned=DiscLR 단일호출. 3상자에서 LPB 구조 우위 여부. 상세: docs/reflections/phase13.md"
+}

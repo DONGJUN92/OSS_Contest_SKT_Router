@@ -1,0 +1,90 @@
+{
+ "corr": {
+  "fast": {
+   "lpb": 0.8744,
+   "std": 0.0449,
+   "cascade": 0.7678,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 87.44,
+    "selection_error": 0.0,
+    "early_stop_regret": 6.15,
+    "budget_ceiling": 0.55,
+    "world_ceiling": 2.3,
+    "unanswered": 3.56
+   }
+  },
+  "balanced": {
+   "lpb": 0.9419,
+   "std": 0.0309,
+   "cascade": 0.966,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 94.19,
+    "selection_error": 0.05,
+    "early_stop_regret": 0.4,
+    "budget_ceiling": 0.35,
+    "world_ceiling": 2.3,
+    "unanswered": 2.7
+   }
+  },
+  "premium": {
+   "lpb": 0.974,
+   "std": 0.0052,
+   "cascade": 0.9765,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 97.4,
+    "selection_error": 0.05,
+    "early_stop_regret": 0.2,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 2.35,
+    "unanswered": 0.0
+   }
+  }
+ },
+ "crossing": {
+  "fast": {
+   "lpb": 0.993,
+   "std": 0.004,
+   "cascade": 0.9935,
+   "oracle": 0.994,
+   "cats": {
+    "ok": 99.3,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.1,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 0.6,
+    "unanswered": 0.0
+   }
+  },
+  "balanced": {
+   "lpb": 0.981,
+   "std": 0.0244,
+   "cascade": 0.9935,
+   "oracle": 0.994,
+   "cats": {
+    "ok": 98.1,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.1,
+    "budget_ceiling": 0.1,
+    "world_ceiling": 0.6,
+    "unanswered": 1.1
+   }
+  },
+  "premium": {
+   "lpb": 0.9935,
+   "std": 0.0041,
+   "cascade": 0.9935,
+   "oracle": 0.994,
+   "cats": {
+    "ok": 99.35,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.05,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 0.6,
+    "unanswered": 0.0
+   }
+  }
+ }
+}

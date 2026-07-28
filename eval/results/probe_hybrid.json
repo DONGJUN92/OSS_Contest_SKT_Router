@@ -1,0 +1,36 @@
+{
+ "n_folds": 5,
+ "summary": {
+  "textworld": {
+   "lpb": 0.751,
+   "learned": 0.7681,
+   "hybrid": 0.768,
+   "hybrid_minus_max": -0.0001,
+   "picks": {
+    "lpb": 9,
+    "learned": 6
+   }
+  },
+  "corr": {
+   "lpb": 0.8614,
+   "learned": 0.7819,
+   "hybrid": 0.8614,
+   "hybrid_minus_max": 0.0,
+   "picks": {
+    "lpb": 15,
+    "learned": 0
+   }
+  },
+  "irt": {
+   "lpb": 0.8324,
+   "learned": 0.6982,
+   "hybrid": 0.8324,
+   "hybrid_minus_max": 0.0,
+   "picks": {
+    "lpb": 15,
+    "learned": 0
+   }
+  }
+ },
+ "note": "hybrid≈max(LPB,learned)이면 어느 baseline에도 안 짐 = 한계 극복"
+}

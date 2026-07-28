@@ -1,0 +1,65 @@
+{
+ "note": "prefix_sharing ON vs OFF 종합점수. Δ>0 = 공유가 사실일 때의 상한 prize (Q3 확정 전 기본 OFF). 상세: docs/reflections/phase13.md",
+ "summary": {
+  "irt": {
+   "off": 0.9486,
+   "on": 0.9303,
+   "delta": -0.0183,
+   "tier_delta": [
+    -0.035,
+    -0.003,
+    0.0005
+   ]
+  },
+  "specialist": {
+   "off": 0.9982,
+   "on": 0.9915,
+   "delta": -0.0067,
+   "tier_delta": [
+    -0.0134,
+    0.0,
+    0.0
+   ]
+  },
+  "corr": {
+   "off": 0.9258,
+   "on": 0.9101,
+   "delta": -0.0157,
+   "tier_delta": [
+    -0.026,
+    -0.009,
+    0.0
+   ]
+  },
+  "crossing": {
+   "off": 0.9907,
+   "on": 0.9919,
+   "delta": 0.0012,
+   "tier_delta": [
+    0.0,
+    0.004,
+    0.0
+   ]
+  },
+  "nosignal": {
+   "off": 0.9613,
+   "on": 0.9529,
+   "delta": -0.0084,
+   "tier_delta": [
+    -0.011,
+    -0.0095,
+    0.0
+   ]
+  },
+  "textworld": {
+   "off": 0.8189,
+   "on": 0.8025,
+   "delta": -0.0164,
+   "tier_delta": [
+    -0.021,
+    -0.016,
+    -0.0055
+   ]
+  }
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "n_prompts": 1500,
+ "n_models": 11,
+ "n_cells": 16500,
+ "positive_rate": 0.5091,
+ "text_dim": 100,
+ "break_even_auc": 0.845,
+ "auc": {
+  "현행 ScoringVerifier (9특성+도메인원핫)": 0.6113,
+  "현행 9특성만 (런타임 task 라벨 없음)": 0.6512,
+  "+ tail/형식 특성 (도메인 검사 제외)": 0.6627,
+  "+ 실도메인 STRUCT_CHECKS": 0.6701,
+  "+ 교차모델 답 일치(agree_ref)": 0.8485,
+  "+ 응답 hashing": 0.8575,
+  "+ 프롬프트 hashing": 0.8648,
+  "+ 상자 원-핫 (= 전체 증강)": 0.8673,
+  "[대조] 상자 원-핫만 (텍스트 무시)": 0.6988
+ },
+ "best": 0.8673,
+ "gate": "PASS",
+ "verdict": "PASS — 증강 검증기가 손익분기를 넘겼다",
+ "note": "실물 RouterBench 0-shot 자유형식 응답. 손익분기는 eval/probe_verifier_sensitivity.py 측정값."
+}

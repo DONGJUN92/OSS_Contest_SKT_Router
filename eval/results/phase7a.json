@@ -1,0 +1,134 @@
+{
+ "corr": {
+  "fast": {
+   "lpb": 0.8779,
+   "std": 0.0436,
+   "cascade": 0.7678,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 87.79,
+    "selection_error": 0.0,
+    "early_stop_regret": 5.9,
+    "budget_ceiling": 0.7,
+    "world_ceiling": 2.3,
+    "unanswered": 3.31
+   }
+  },
+  "balanced": {
+   "lpb": 0.9429,
+   "std": 0.0301,
+   "cascade": 0.966,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 94.29,
+    "selection_error": 0.05,
+    "early_stop_regret": 0.4,
+    "budget_ceiling": 0.3,
+    "world_ceiling": 2.3,
+    "unanswered": 2.65
+   }
+  },
+  "premium": {
+   "lpb": 0.974,
+   "std": 0.0052,
+   "cascade": 0.9765,
+   "oracle": 0.9765,
+   "cats": {
+    "ok": 97.4,
+    "selection_error": 0.05,
+    "early_stop_regret": 0.2,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 2.35,
+    "unanswered": 0.0
+   }
+  }
+ },
+ "crossing": {
+  "fast": {
+   "lpb": 0.9955,
+   "std": 0.0029,
+   "cascade": 0.995,
+   "oracle": 0.9955,
+   "cats": {
+    "ok": 99.55,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.0,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 0.45,
+    "unanswered": 0.0
+   }
+  },
+  "balanced": {
+   "lpb": 0.9955,
+   "std": 0.0029,
+   "cascade": 0.995,
+   "oracle": 0.9955,
+   "cats": {
+    "ok": 99.55,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.0,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 0.45,
+    "unanswered": 0.0
+   }
+  },
+  "premium": {
+   "lpb": 0.9955,
+   "std": 0.0029,
+   "cascade": 0.995,
+   "oracle": 0.9955,
+   "cats": {
+    "ok": 99.55,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.0,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 0.45,
+    "unanswered": 0.0
+   }
+  }
+ },
+ "nosignal": {
+  "fast": {
+   "lpb": 0.942,
+   "std": 0.0269,
+   "cascade": 0.5933,
+   "oracle": 0.981,
+   "cats": {
+    "ok": 94.2,
+    "selection_error": 0.0,
+    "early_stop_regret": 2.1,
+    "budget_ceiling": 0.35,
+    "world_ceiling": 1.9,
+    "unanswered": 1.45
+   }
+  },
+  "balanced": {
+   "lpb": 0.98,
+   "std": 0.0016,
+   "cascade": 0.9805,
+   "oracle": 0.981,
+   "cats": {
+    "ok": 98.0,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.1,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 1.9,
+    "unanswered": 0.0
+   }
+  },
+  "premium": {
+   "lpb": 0.9805,
+   "std": 0.0019,
+   "cascade": 0.9805,
+   "oracle": 0.981,
+   "cats": {
+    "ok": 98.05,
+    "selection_error": 0.0,
+    "early_stop_regret": 0.05,
+    "budget_ceiling": 0.0,
+    "world_ceiling": 1.9,
+    "unanswered": 0.0
+   }
+  }
+ }
+}

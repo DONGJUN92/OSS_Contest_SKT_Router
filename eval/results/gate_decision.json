@@ -1,0 +1,45 @@
+{
+ "verifier_auc": 0.8589,
+ "threshold": 0.845,
+ "predicted": "lpb",
+ "per_tier_scores": {
+  "fast": {
+   "lpb": 0.3968,
+   "learned": 0.4286,
+   "cascade_routing": 0.3571,
+   "_best_alt": "learned",
+   "_paired_se": 0.0373,
+   "_required_margin": 0.0373,
+   "_observed_gap": 0.0317
+  },
+  "balanced": {
+   "lpb": 0.5476,
+   "learned": 0.5794,
+   "cascade_routing": 0.5635,
+   "_best_alt": "learned",
+   "_paired_se": 0.0337,
+   "_required_margin": 0.0337,
+   "_observed_gap": 0.0317
+  },
+  "premium": {
+   "lpb": 0.7302,
+   "learned": 0.7381,
+   "cascade_routing": 0.7222,
+   "_best_alt": "learned",
+   "_paired_se": 0.0398,
+   "_required_margin": 0.0398,
+   "_observed_gap": 0.0079
+  }
+ },
+ "chosen": {
+  "fast": "lpb",
+  "balanced": "lpb",
+  "premium": "lpb"
+ },
+ "agreement": true,
+ "notes": [
+  "증강 검증기를 ds.verifier 에 반영 (관측 채널 = 배포 채널)",
+  "예측층: AUC 0.8589 vs 임계 0.845 → lpb (결정권 없음)"
+ ],
+ "deploy": "lpb"
+}

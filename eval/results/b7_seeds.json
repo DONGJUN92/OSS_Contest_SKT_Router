@@ -1,0 +1,38 @@
+{
+ "irt/42": {
+  "lpb": 0.9475,
+  "cascade": 0.6996
+ },
+ "irt/123": {
+  "lpb": 0.9623,
+  "cascade": 0.7565
+ },
+ "irt/777": {
+  "lpb": 0.9764,
+  "cascade": 0.8613
+ },
+ "corr/42": {
+  "lpb": 0.9384,
+  "cascade": 0.8723
+ },
+ "corr/123": {
+  "lpb": 0.9312,
+  "cascade": 0.8318
+ },
+ "corr/777": {
+  "lpb": 0.9106,
+  "cascade": 0.7802
+ },
+ "textworld/42": {
+  "lpb": 0.8192,
+  "cascade": 0.6344
+ },
+ "textworld/123": {
+  "lpb": 0.8223,
+  "cascade": 0.6371
+ },
+ "textworld/777": {
+  "lpb": 0.82,
+  "cascade": 0.654
+ }
+}

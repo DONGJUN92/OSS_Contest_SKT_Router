@@ -1,0 +1,27 @@
+{
+ "analytic": {
+  "order_flip_demo": true,
+  "sigma_gap_sd2.0": 0.4665
+ },
+ "ns": [
+  1
+ ],
+ "n_folds": 2,
+ "worlds": {
+  "irt": {
+   "latent": 0.532,
+   "observable": 0.531,
+   "obs_minus_lat": -0.001,
+   "observable_value_order": 0.5203,
+   "value_minus_sigma": -0.0107
+  },
+  "textworld": {
+   "latent": 0.4815,
+   "observable": 0.4844,
+   "obs_minus_lat": 0.0029,
+   "observable_value_order": 0.4938,
+   "value_minus_sigma": 0.0094
+  }
+ },
+ "note": "Phase 17. analytic=σ 과대·순서역전 재현. observable=E[Q|v] 분포로 푼 예약값. value_minus_sigma 는 open_order 인자 연결(결함 수정) 후 처음 실행된 A/B."
+}

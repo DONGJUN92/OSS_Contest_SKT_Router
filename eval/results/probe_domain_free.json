@@ -1,0 +1,65 @@
+{
+ "n_folds": 5,
+ "summary": {
+  "irt": {
+   "multigroup": 0.9476,
+   "single_group": 0.9451,
+   "delta": -0.0025,
+   "tier_delta": [
+    -0.005,
+    0.0,
+    0.0
+   ]
+  },
+  "specialist": {
+   "multigroup": 0.998,
+   "single_group": 0.995,
+   "delta": -0.003,
+   "tier_delta": [
+    -0.006,
+    0.0,
+    0.0
+   ]
+  },
+  "corr": {
+   "multigroup": 0.9286,
+   "single_group": 0.9365,
+   "delta": 0.0079,
+   "tier_delta": [
+    0.016,
+    -0.0005,
+    0.0
+   ]
+  },
+  "crossing": {
+   "multigroup": 0.9937,
+   "single_group": 0.9937,
+   "delta": 0.0,
+   "tier_delta": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "nosignal": {
+   "multigroup": 0.9484,
+   "single_group": 0.9605,
+   "delta": 0.0121,
+   "tier_delta": [
+    0.0243,
+    0.0,
+    0.0
+   ]
+  },
+  "textworld": {
+   "multigroup": 0.8395,
+   "single_group": 0.8362,
+   "delta": -0.0032,
+   "tier_delta": [
+    -0.0065,
+    -0.003,
+    0.0045
+   ]
+  }
+ }
+}

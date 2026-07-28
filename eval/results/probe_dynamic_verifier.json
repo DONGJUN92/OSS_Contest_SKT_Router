@@ -1,0 +1,41 @@
+{
+ "A 정적 agree_ref (현행)": {
+  "auc_fast": 0.9143,
+  "per_tier": {
+   "fast": 0.3638,
+   "balanced": 0.5823,
+   "premium": 0.7427
+  },
+  "composite": 0.5051,
+  "delta_se": "—"
+ },
+ "B 정적 대칭일치율 (참조)": {
+  "auc_fast": 0.9143,
+  "per_tier": {
+   "fast": 0.3638,
+   "balanced": 0.5781,
+   "premium": 0.7455
+  },
+  "composite": 0.5044,
+  "delta_se": "-0.0007(0.0005)"
+ },
+ "C 동적 호출분일치율": {
+  "auc_fast": 0.9143,
+  "per_tier": {
+   "fast": 0.3638,
+   "balanced": 0.5781,
+   "premium": 0.7455
+  },
+  "composite": 0.5044,
+  "delta_se": "-0.0007(0.0005)"
+ },
+ "_verdict": {
+  "static": 0.5051,
+  "dynamic": 0.5044,
+  "delta": -0.0007,
+  "achievable_ceiling": 0.5725,
+  "verifier_headroom": 0.0593,
+  "captured_pct": -1.2,
+  "note": "Phase 19. 채택은 쌍대 SE 초과 여부로 판정한다 (D21). 검증기 여지 +0.0593 중 몇 % 를 회수했는지가 이 프로브의 목적."
+ }
+}

@@ -1,0 +1,486 @@
+{
+ "irt": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.469,
+   "cost_pct": 100.0,
+   "unanswered": 0
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.464,
+   "cost_pct": 100.0,
+   "unanswered": 18
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.4665,
+   "cost_pct": 100.0,
+   "unanswered": 2
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.6079,
+   "cost_pct": 100.0,
+   "unanswered": 3
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.5806,
+   "cost_pct": 100.0,
+   "unanswered": 22
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.6154,
+   "cost_pct": 100.0,
+   "unanswered": 2
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.4875,
+   "cost_pct": 97.1,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.485,
+   "cost_pct": 96.2,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.485,
+   "cost_pct": 97.6,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.6325,
+   "cost_pct": 96.0,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.625,
+   "cost_pct": 100.0,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.6275,
+   "cost_pct": 95.9,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.5414,
+   "cost_pct": 100.0,
+   "unanswered": 9
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.5464,
+   "cost_pct": 100.0,
+   "unanswered": 6
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.5514,
+   "cost_pct": 100.0,
+   "unanswered": 9
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.6591,
+   "cost_pct": 92.4,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.6566,
+   "cost_pct": 94.1,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.6516,
+   "cost_pct": 93.8,
+   "unanswered": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.4912,
+   "cost_pct": 100.0,
+   "unanswered": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.4962,
+   "cost_pct": 98.7,
+   "unanswered": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.4912,
+   "cost_pct": 100.0,
+   "unanswered": 1
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.619,
+   "cost_pct": 100.0,
+   "unanswered": 21
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.614,
+   "cost_pct": 100.0,
+   "unanswered": 17
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.6115,
+   "cost_pct": 100.0,
+   "unanswered": 25
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.4912,
+   "cost_pct": 98.2,
+   "unanswered": 0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.4862,
+   "cost_pct": 98.2,
+   "unanswered": 0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.4937,
+   "cost_pct": 97.1,
+   "unanswered": 0
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.6366,
+   "cost_pct": 100.0,
+   "unanswered": 1
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.6441,
+   "cost_pct": 98.4,
+   "unanswered": 0
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.6441,
+   "cost_pct": 99.5,
+   "unanswered": 0
+  }
+ ],
+ "specialist": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.6228,
+   "cost_pct": 100.0,
+   "unanswered": 5
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.6104,
+   "cost_pct": 100.0,
+   "unanswered": 10
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.6055,
+   "cost_pct": 100.0,
+   "unanswered": 20
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.7494,
+   "cost_pct": 93.9,
+   "unanswered": 0
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.7419,
+   "cost_pct": 92.6,
+   "unanswered": 0
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.7419,
+   "cost_pct": 99.9,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.6425,
+   "cost_pct": 100.0,
+   "unanswered": 15
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.6725,
+   "cost_pct": 100.0,
+   "unanswered": 2
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.6575,
+   "cost_pct": 95.3,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.76,
+   "cost_pct": 96.5,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.7625,
+   "cost_pct": 94.9,
+   "unanswered": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.7525,
+   "cost_pct": 95.1,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.6842,
+   "cost_pct": 99.7,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.6792,
+   "cost_pct": 97.5,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.6842,
+   "cost_pct": 90.4,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.7769,
+   "cost_pct": 99.8,
+   "unanswered": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.7544,
+   "cost_pct": 100.0,
+   "unanswered": 3
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.7644,
+   "cost_pct": 94.9,
+   "unanswered": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.6216,
+   "cost_pct": 100.0,
+   "unanswered": 1
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.6216,
+   "cost_pct": 98.5,
+   "unanswered": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.6366,
+   "cost_pct": 97.7,
+   "unanswered": 0
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.7043,
+   "cost_pct": 100.0,
+   "unanswered": 12
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.7343,
+   "cost_pct": 99.6,
+   "unanswered": 0
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.7143,
+   "cost_pct": 100.0,
+   "unanswered": 12
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "irt-enc",
+   "quality": 0.609,
+   "cost_pct": 100.0,
+   "unanswered": 24
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "disc-lr",
+   "quality": 0.6216,
+   "cost_pct": 100.0,
+   "unanswered": 13
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "oracle-p",
+   "quality": 0.5689,
+   "cost_pct": 100.0,
+   "unanswered": 44
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "irt-enc",
+   "quality": 0.7093,
+   "cost_pct": 100.0,
+   "unanswered": 1
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "disc-lr",
+   "quality": 0.7218,
+   "cost_pct": 100.0,
+   "unanswered": 1
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "oracle-p",
+   "quality": 0.7018,
+   "cost_pct": 100.0,
+   "unanswered": 6
+  }
+ ]
+}

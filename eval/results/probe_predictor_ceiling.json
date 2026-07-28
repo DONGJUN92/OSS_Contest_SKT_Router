@@ -1,0 +1,68 @@
+{
+ "per_tier": {
+  "현행 (실측 p̄ · 실측 검증기)": {
+   "fast": 0.3582,
+   "balanced": 0.5823,
+   "premium": 0.7427
+  },
+  "ⓐ 진짜확률 p̄ (학습가능 상한)": {
+   "fast": 0.3693,
+   "balanced": 0.5947,
+   "premium": 0.758
+  },
+  "① 실현정오 p̄ (clairvoyant)": {
+   "fast": 0.3887,
+   "balanced": 0.769,
+   "premium": 0.9101
+  },
+  "② 검증기 오라클": {
+   "fast": 0.3651,
+   "balanced": 0.6722,
+   "premium": 0.8976
+  },
+  "★ⓑ 진짜확률 p̄ + 검증기 오라클 (달성 가능 상한)": {
+   "fast": 0.3693,
+   "balanced": 0.6916,
+   "premium": 0.899
+  },
+  "③ 실현정오+검증기 오라클": {
+   "fast": 0.3887,
+   "balanced": 0.805,
+   "premium": 0.9101
+  },
+  "④ 예산제약 오라클": {
+   "fast": 0.4219,
+   "balanced": 0.8119,
+   "premium": 0.9101
+  },
+  "하한 always-cheapest": {
+   "fast": 0.3499,
+   "balanced": 0.3499,
+   "premium": 0.3499
+  }
+ },
+ "composite": {
+  "현행 (실측 p̄ · 실측 검증기)": 0.5024,
+  "ⓐ 진짜확률 p̄ (학습가능 상한)": 0.5147,
+  "① 실현정오 p̄ (clairvoyant)": 0.6071,
+  "② 검증기 오라클": 0.5638,
+  "★ⓑ 진짜확률 p̄ + 검증기 오라클 (달성 가능 상한)": 0.5719,
+  "③ 실현정오+검증기 오라클": 0.6178,
+  "④ 예산제약 오라클": 0.6365,
+  "하한 always-cheapest": 0.3499
+ },
+ "span_nominal": 0.2866,
+ "remaining_nominal": 0.1342,
+ "achievable_ceiling": 0.5719,
+ "achievable_span": 0.222,
+ "achievable_position_pct": 68.7,
+ "achievable_remaining": 0.0696,
+ "aleatoric_share_of_nominal_span": 0.2254,
+ "decomposition": {
+  "predictor_headroom_learnable": 0.0123,
+  "verifier_headroom_achievable": 0.0614,
+  "decision_structure_residual": 0.0187,
+  "clairvoyant_pbar_reference_NOT_achievable": 0.1047
+ },
+ "note": "Phase 19. A.X 3모델·Q2=No·textworld. ⓐ진짜확률=학습가능 상한, ①실현정오=clairvoyance(달성 불가). 초판은 ①을 예측 여지로 오독했다."
+}

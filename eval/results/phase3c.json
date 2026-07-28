@@ -1,0 +1,546 @@
+{
+ "irt": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.603,
+   "cost_pct": 100.0,
+   "calls_q": 1.81,
+   "unans": 4
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.6129,
+   "cost_pct": 100.0,
+   "calls_q": 1.84,
+   "unans": 3
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.6154,
+   "cost_pct": 100.0,
+   "calls_q": 1.87,
+   "unans": 2
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.7593,
+   "cost_pct": 100.0,
+   "calls_q": 2.14,
+   "unans": 42
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.7667,
+   "cost_pct": 100.0,
+   "calls_q": 2.2,
+   "unans": 35
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.7742,
+   "cost_pct": 100.0,
+   "calls_q": 2.25,
+   "unans": 33
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.65,
+   "cost_pct": 91.1,
+   "calls_q": 1.83,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.6475,
+   "cost_pct": 90.4,
+   "calls_q": 1.85,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.6425,
+   "cost_pct": 89.5,
+   "calls_q": 1.79,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.8625,
+   "cost_pct": 86.8,
+   "calls_q": 2.35,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.865,
+   "cost_pct": 88.1,
+   "calls_q": 2.36,
+   "unans": 0
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.8575,
+   "cost_pct": 85.5,
+   "calls_q": 2.29,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.594,
+   "cost_pct": 100.0,
+   "calls_q": 1.83,
+   "unans": 38
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.594,
+   "cost_pct": 100.0,
+   "calls_q": 1.85,
+   "unans": 37
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.584,
+   "cost_pct": 100.0,
+   "calls_q": 1.76,
+   "unans": 45
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.8496,
+   "cost_pct": 99.8,
+   "calls_q": 2.47,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.8471,
+   "cost_pct": 99.9,
+   "calls_q": 2.48,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.8471,
+   "cost_pct": 99.1,
+   "calls_q": 2.45,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.5689,
+   "cost_pct": 100.0,
+   "calls_q": 1.84,
+   "unans": 26
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.584,
+   "cost_pct": 100.0,
+   "calls_q": 1.89,
+   "unans": 16
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.5865,
+   "cost_pct": 100.0,
+   "calls_q": 1.88,
+   "unans": 16
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.807,
+   "cost_pct": 100.0,
+   "calls_q": 2.41,
+   "unans": 15
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.797,
+   "cost_pct": 100.0,
+   "calls_q": 2.41,
+   "unans": 15
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.7895,
+   "cost_pct": 100.0,
+   "calls_q": 2.37,
+   "unans": 21
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.6316,
+   "cost_pct": 100.0,
+   "calls_q": 1.9,
+   "unans": 11
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.6366,
+   "cost_pct": 100.0,
+   "calls_q": 1.93,
+   "unans": 3
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.6341,
+   "cost_pct": 100.0,
+   "calls_q": 1.84,
+   "unans": 12
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.8546,
+   "cost_pct": 100.0,
+   "calls_q": 2.43,
+   "unans": 7
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.8496,
+   "cost_pct": 100.0,
+   "calls_q": 2.41,
+   "unans": 12
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.8521,
+   "cost_pct": 100.0,
+   "calls_q": 2.35,
+   "unans": 10
+  }
+ ],
+ "specialist": [
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.727,
+   "cost_pct": 100.0,
+   "calls_q": 2.02,
+   "unans": 22
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.7246,
+   "cost_pct": 100.0,
+   "calls_q": 2.01,
+   "unans": 25
+  },
+  {
+   "fold": 0,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.7246,
+   "cost_pct": 100.0,
+   "calls_q": 2.03,
+   "unans": 21
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.8387,
+   "cost_pct": 100.0,
+   "calls_q": 2.25,
+   "unans": 49
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.8511,
+   "cost_pct": 100.0,
+   "calls_q": 2.26,
+   "unans": 43
+  },
+  {
+   "fold": 0,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.8561,
+   "cost_pct": 100.0,
+   "calls_q": 2.29,
+   "unans": 40
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.805,
+   "cost_pct": 100.0,
+   "calls_q": 2.04,
+   "unans": 3
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.7975,
+   "cost_pct": 100.0,
+   "calls_q": 2.02,
+   "unans": 5
+  },
+  {
+   "fold": 1,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.79,
+   "cost_pct": 100.0,
+   "calls_q": 2.02,
+   "unans": 9
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.945,
+   "cost_pct": 100.0,
+   "calls_q": 2.32,
+   "unans": 10
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.95,
+   "cost_pct": 100.0,
+   "calls_q": 2.32,
+   "unans": 8
+  },
+  {
+   "fold": 1,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.9175,
+   "cost_pct": 100.0,
+   "calls_q": 2.28,
+   "unans": 22
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.8371,
+   "cost_pct": 94.0,
+   "calls_q": 2.02,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.8396,
+   "cost_pct": 96.3,
+   "calls_q": 2.04,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.8421,
+   "cost_pct": 97.7,
+   "calls_q": 2.04,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.9624,
+   "cost_pct": 84.8,
+   "calls_q": 2.3,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.9624,
+   "cost_pct": 85.7,
+   "calls_q": 2.3,
+   "unans": 0
+  },
+  {
+   "fold": 2,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.9624,
+   "cost_pct": 85.9,
+   "calls_q": 2.3,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.7945,
+   "cost_pct": 100.0,
+   "calls_q": 2.05,
+   "unans": 2
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.7945,
+   "cost_pct": 100.0,
+   "calls_q": 2.06,
+   "unans": 3
+  },
+  {
+   "fold": 3,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.7794,
+   "cost_pct": 100.0,
+   "calls_q": 2.0,
+   "unans": 12
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.9474,
+   "cost_pct": 88.0,
+   "calls_q": 2.34,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.9474,
+   "cost_pct": 89.6,
+   "calls_q": 2.33,
+   "unans": 0
+  },
+  {
+   "fold": 3,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.9474,
+   "cost_pct": 91.2,
+   "calls_q": 2.32,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-irt",
+   "quality": 0.782,
+   "cost_pct": 90.6,
+   "calls_q": 2.04,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-noupd",
+   "quality": 0.787,
+   "cost_pct": 94.1,
+   "calls_q": 2.05,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "fast",
+   "policy": "pandora-disc",
+   "quality": 0.787,
+   "cost_pct": 92.7,
+   "calls_q": 2.04,
+   "unans": 0
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-irt",
+   "quality": 0.9373,
+   "cost_pct": 100.0,
+   "calls_q": 2.34,
+   "unans": 6
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-noupd",
+   "quality": 0.9398,
+   "cost_pct": 100.0,
+   "calls_q": 2.34,
+   "unans": 4
+  },
+  {
+   "fold": 4,
+   "tier": "balanced",
+   "policy": "pandora-disc",
+   "quality": 0.9424,
+   "cost_pct": 100.0,
+   "calls_q": 2.34,
+   "unans": 2
+  }
+ ]
+}

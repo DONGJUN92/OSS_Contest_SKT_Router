@@ -1,0 +1,178 @@
+{
+ "A_textworld_augmented": {
+  "decision": {
+   "verifier_auc": 0.9013,
+   "threshold": 0.845,
+   "predicted": "lpb",
+   "per_tier_scores": {
+    "fast": {
+     "lpb": 0.35,
+     "learned": 0.3667,
+     "cascade_routing": 0.3458,
+     "_best_alt": "learned",
+     "_paired_se": 0.0132,
+     "_required_margin": 0.0132,
+     "_observed_gap": 0.0167
+    },
+    "balanced": {
+     "lpb": 0.5583,
+     "learned": 0.55,
+     "cascade_routing": 0.5917,
+     "_best_alt": "cascade_routing",
+     "_paired_se": 0.0166,
+     "_required_margin": 0.0166,
+     "_observed_gap": 0.0333
+    },
+    "premium": {
+     "lpb": 0.7792,
+     "learned": 0.7125,
+     "cascade_routing": 0.7042,
+     "_best_alt": "learned",
+     "_paired_se": 0.0298,
+     "_required_margin": 0.0298,
+     "_observed_gap": -0.0667
+    }
+   },
+   "chosen": {
+    "fast": "learned",
+    "balanced": "cascade_routing",
+    "premium": "lpb"
+   },
+   "agreement": false,
+   "notes": [
+    "증강 검증기를 ds.verifier 에 반영 (관측 채널 = 배포 채널)",
+    "예측층: AUC 0.9013 vs 임계 0.845 → lpb (결정권 없음; 임계값 출처 = 재현 스크립트 부재 (참고용 · 결정 권한 없음))",
+    "⚠ 예측층과 결정층 불일치 — 전이된 임계값이 이 데이터에서 맞지 않는다. 결정층을 따르고, 이 사건을 임계값 교정 근거로 기록한다 (Phase 17 §2 법칙 검증)."
+   ],
+   "deploy": "selective"
+  },
+  "post_hoc": {
+   "composite_deployed": 0.5856,
+   "composite_regret_vs_oracle_choice": 0.005,
+   "per_tier": {
+    "fast": {
+     "deployed": 0.4455,
+     "all": {
+      "lpb": 0.4356,
+      "learned": 0.4455,
+      "cascade_routing": 0.4455
+     },
+     "regret_vs_best": 0.0
+    },
+    "balanced": {
+     "deployed": 0.6782,
+     "all": {
+      "lpb": 0.6436,
+      "learned": 0.6238,
+      "cascade_routing": 0.6782
+     },
+     "regret_vs_best": 0.0
+    },
+    "premium": {
+     "deployed": 0.797,
+     "all": {
+      "lpb": 0.797,
+      "learned": 0.7277,
+      "cascade_routing": 0.8218
+     },
+     "regret_vs_best": 0.0248
+    }
+   }
+  },
+  "adapter": {
+   "adapter_kind": [
+    "single"
+   ],
+   "answered": 15,
+   "queries": 15
+  }
+ },
+ "B_routerbench_real": {
+  "decision": {
+   "verifier_auc": 0.8675,
+   "threshold": 0.845,
+   "predicted": "lpb",
+   "per_tier_scores": {
+    "fast": {
+     "lpb": 0.7109,
+     "learned": 0.6566,
+     "cascade_routing": 0.6975,
+     "_best_alt": "cascade_routing",
+     "_paired_se": 0.0066,
+     "_required_margin": 0.01,
+     "_observed_gap": -0.0133
+    },
+    "balanced": {
+     "lpb": 0.763,
+     "learned": 0.7167,
+     "cascade_routing": 0.7569,
+     "_best_alt": "cascade_routing",
+     "_paired_se": 0.0041,
+     "_required_margin": 0.01,
+     "_observed_gap": -0.0062
+    },
+    "premium": {
+     "lpb": 0.763,
+     "learned": 0.7067,
+     "cascade_routing": 0.763,
+     "_best_alt": "cascade_routing",
+     "_paired_se": 0.0029,
+     "_required_margin": 0.01,
+     "_observed_gap": 0.0
+    }
+   },
+   "chosen": {
+    "fast": "lpb",
+    "balanced": "lpb",
+    "premium": "lpb"
+   },
+   "agreement": true,
+   "notes": [
+    "증강 검증기를 ds.verifier 에 반영 (관측 채널 = 배포 채널)",
+    "예측층: AUC 0.8675 vs 임계 0.845 → lpb (결정권 없음; 임계값 출처 = 재현 스크립트 부재 (참고용 · 결정 권한 없음))"
+   ],
+   "deploy": "lpb"
+  },
+  "post_hoc": {
+   "composite_deployed": 0.735,
+   "composite_regret_vs_oracle_choice": 0.003,
+   "per_tier": {
+    "fast": {
+     "deployed": 0.7133,
+     "all": {
+      "lpb": 0.7117,
+      "learned": 0.6677,
+      "cascade_routing": 0.71
+     },
+     "regret_vs_best": -0.0017
+    },
+    "balanced": {
+     "deployed": 0.7551,
+     "all": {
+      "lpb": 0.7522,
+      "learned": 0.7597,
+      "cascade_routing": 0.7469
+     },
+     "regret_vs_best": 0.0045
+    },
+    "premium": {
+     "deployed": 0.7591,
+     "all": {
+      "lpb": 0.7548,
+      "learned": 0.7717,
+      "cascade_routing": 0.7585
+     },
+     "regret_vs_best": 0.0125
+    }
+   }
+  },
+  "adapter": {
+   "adapter_kind": [
+    "pandora"
+   ],
+   "answered": 15,
+   "queries": 15
+  }
+ },
+ "note": "Phase 18. 실데이터 미수령 상태에서 게이트를 임계값 양쪽 실데이터로 실제 통과시킨 예행연. 예측층=AUC, 결정층=train 내 직접 비교(권위)."
+}

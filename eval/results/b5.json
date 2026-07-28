@@ -1,0 +1,137 @@
+{
+ "irt": {
+  "fixed": 0.8061,
+  "paced": 0.8061,
+  "cascade": 0.7462,
+  "global_ref": 0.9486,
+  "unans_pct": 0.0,
+  "tiers": {
+   "fast": {
+    "fixed": 0.711,
+    "fixed_std": 0.0195,
+    "paced": 0.711,
+    "cascade": 0.644
+   },
+   "balanced": {
+    "fixed": 0.8755,
+    "fixed_std": 0.0191,
+    "paced": 0.8755,
+    "cascade": 0.793
+   },
+   "premium": {
+    "fixed": 0.9395,
+    "fixed_std": 0.0102,
+    "paced": 0.9395,
+    "cascade": 0.9315
+   }
+  }
+ },
+ "specialist": {
+  "fixed": 0.9289,
+  "paced": 0.9289,
+  "cascade": 0.9086,
+  "global_ref": 0.9982,
+  "unans_pct": 0.0,
+  "tiers": {
+   "fast": {
+    "fixed": 0.8825,
+    "fixed_std": 0.0139,
+    "paced": 0.8825,
+    "cascade": 0.8625
+   },
+   "balanced": {
+    "fixed": 0.968,
+    "fixed_std": 0.0063,
+    "paced": 0.968,
+    "cascade": 0.9365
+   },
+   "premium": {
+    "fixed": 0.986,
+    "fixed_std": 0.0037,
+    "paced": 0.986,
+    "cascade": 0.982
+   }
+  }
+ },
+ "corr": {
+  "fixed": 0.8113,
+  "paced": 0.8113,
+  "cascade": 0.7673,
+  "global_ref": 0.9259,
+  "unans_pct": 0.0,
+  "tiers": {
+   "fast": {
+    "fixed": 0.7284,
+    "fixed_std": 0.0393,
+    "paced": 0.7284,
+    "cascade": 0.6939
+   },
+   "balanced": {
+    "fixed": 0.8664,
+    "fixed_std": 0.0235,
+    "paced": 0.8664,
+    "cascade": 0.7874
+   },
+   "premium": {
+    "fixed": 0.936,
+    "fixed_std": 0.0101,
+    "paced": 0.936,
+    "cascade": 0.9205
+   }
+  }
+ },
+ "crossing": {
+  "fixed": 0.9645,
+  "paced": 0.9645,
+  "cascade": 0.96,
+  "global_ref": 0.9907,
+  "unans_pct": 0.0,
+  "tiers": {
+   "fast": {
+    "fixed": 0.9475,
+    "fixed_std": 0.0075,
+    "paced": 0.9475,
+    "cascade": 0.9425
+   },
+   "balanced": {
+    "fixed": 0.9775,
+    "fixed_std": 0.005,
+    "paced": 0.9775,
+    "cascade": 0.9725
+   },
+   "premium": {
+    "fixed": 0.9875,
+    "fixed_std": 0.0055,
+    "paced": 0.9875,
+    "cascade": 0.985
+   }
+  }
+ },
+ "nosignal": {
+  "fixed": 0.8558,
+  "paced": 0.8558,
+  "cascade": 0.8176,
+  "global_ref": 0.9615,
+  "unans_pct": 0.0,
+  "tiers": {
+   "fast": {
+    "fixed": 0.7875,
+    "fixed_std": 0.0187,
+    "paced": 0.7875,
+    "cascade": 0.751
+   },
+   "balanced": {
+    "fixed": 0.9035,
+    "fixed_std": 0.0104,
+    "paced": 0.9035,
+    "cascade": 0.844
+   },
+   "premium": {
+    "fixed": 0.955,
+    "fixed_std": 0.0046,
+    "paced": 0.955,
+    "cascade": 0.9445
+   }
+  }
+ }
+}

@@ -1,0 +1,49 @@
+# A.X 3모델 사다리 config (5→3 collapse 측정용, Phase 13 레버 검토 권고 #1).
+# 대회 실제 후보 = A.X-3.1-Light / A.X-3.1 / A.X-K1 Think (크기·비용 사다리).
+# 목적: 3상자 체제에서 Weitzman/IRT 기구가 튜닝된 cascade·학습형 라우터 대비 제값을 하는지
+#      방어가 아니라 측정으로 확정 (config.yaml의 5모델·70배 스프레드와 대비).
+# 실제 가격은 미공개(Q3) — 상대 사다리만 현실적으로 잡은 대리값.
+
+seed: 42
+
+# 후보 모델 풀 (3모델, 가격은 1k 토큰당). K1 Think는 reasoning이라 출력 토큰 많음.
+models:
+  ax-3.1-light: { prefill_price: 0.05, decode_price: 0.10, avg_out_tokens: 200 }
+  ax-3.1:       { prefill_price: 0.20, decode_price: 0.40, avg_out_tokens: 280 }
+  ax-k1-think:  { prefill_price: 0.60, decode_price: 1.20, avg_out_tokens: 500 }
+
+# 예산 tier (5모델 config와 동일 구조·가중)
+tiers:
+  fast:     { budget_frac: 0.08, weight: 0.5 }
+  balanced: { budget_frac: 0.25, weight: 0.3 }
+  premium:  { budget_frac: 0.60, weight: 0.2 }
+
+cost:
+  prefix_sharing: false
+
+# 합성 데이터 — 세계 파라미터를 3모델(능력 light < 3.1 < k1)로 재설정
+synth:
+  n_queries: 2000
+  n_domains: 4
+  feature_dim: 8
+  verifier_noise: 0.15
+  # World A (irt): 모델별 능력 경계 (작은 모델일수록 높음=약함)
+  irt:
+    a_range: [0.8, 2.2]
+    b_values: [0.9, -0.1, -1.1]
+  # World B (specialist): 도메인 특화 소형 모델이 대형 추월
+  specialist:
+    base_skill: [0.34, 0.52, 0.72]
+    specialist_boost: 0.32
+    difficulty_slope: 0.65
+  # World D (crossing): ICC 교차 — (a,b)를 비용 서열과 비단조로 (3원소)
+  #   light=평탄(a낮음), 3.1=고판별(쉬운문제 강·어려운문제 급락), k1=광범위 강함
+  crossing:
+    a: [0.5, 3.2, 1.0]
+    b: [-0.4, 0.2, -1.5]
+  # World F (textworld): 모델별 능력치 (3원소)
+  textworld_caps: [0.35, 0.58, 0.85]
+
+eval:
+  k_folds: 5
+  cascade_tau_grid: [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]

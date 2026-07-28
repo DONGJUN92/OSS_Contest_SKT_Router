@@ -1,0 +1,13 @@
+# 줄바꿈 정규화 — 저장소에는 LF 로 저장한다.
+# 이유: 이 프로젝트는 Windows 에서 개발되고 CI 는 ubuntu-latest 에서 돈다. 정규화가 없으면
+# 같은 파일이 플랫폼마다 다른 해시를 갖고, 재현성 주장(동일 시드 → 동일 수치)을 검증하려는
+# 사람이 무의미한 diff 를 보게 된다.
+* text=auto eol=lf
+
+# 바이너리 — diff/정규화 대상이 아니다
+*.png  binary
+*.pdf  binary
+
+# 결과 아티팩트는 커밋하지만 diff 노이즈를 줄인다 (리뷰 시 접어 보기)
+eval/results/*.json      linguist-generated=true
+eval/results/figures/*   linguist-generated=true

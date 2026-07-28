@@ -1,0 +1,32 @@
+{
+ "fast": {
+  "beta": 0.8161,
+  "beta_std": 0.0115,
+  "binarized": 0.8142,
+  "bin_std": 0.0104,
+  "cascade": 0.6986,
+  "oracle": 0.9959
+ },
+ "balanced": {
+  "beta": 0.9043,
+  "beta_std": 0.0022,
+  "binarized": 0.9006,
+  "bin_std": 0.0062,
+  "cascade": 0.6986,
+  "oracle": 0.9959
+ },
+ "premium": {
+  "beta": 0.9449,
+  "beta_std": 0.0058,
+  "binarized": 0.9421,
+  "bin_std": 0.009,
+  "cascade": 0.6986,
+  "oracle": 0.9959
+ },
+ "combined": {
+  "beta": 0.8683,
+  "binarized": 0.8657,
+  "cascade": 0.6986
+ },
+ "scale": "strict"
+}

@@ -1,0 +1,40 @@
+{
+ "fast": {
+  "grm": 0.8247,
+  "grm_std": 0.0084,
+  "grm_fit_s": 73.4,
+  "beta": 0.8184,
+  "beta_std": 0.012,
+  "beta_fit_s": 414.0,
+  "binarized": 0.8151,
+  "bin_std": 0.0113,
+  "bin_fit_s": 21.4
+ },
+ "balanced": {
+  "grm": 0.8991,
+  "grm_std": 0.0062,
+  "grm_fit_s": 89.5,
+  "beta": 0.9023,
+  "beta_std": 0.0017,
+  "beta_fit_s": 605.3,
+  "binarized": 0.9009,
+  "bin_std": 0.0059,
+  "bin_fit_s": 21.3
+ },
+ "premium": {
+  "grm": 0.9483,
+  "grm_std": 0.0031,
+  "grm_fit_s": 56.7,
+  "beta": 0.9441,
+  "beta_std": 0.0053,
+  "beta_fit_s": 629.7,
+  "binarized": 0.942,
+  "bin_std": 0.009,
+  "bin_fit_s": 24.1
+ },
+ "combined": {
+  "grm": 0.8717,
+  "beta": 0.8687,
+  "binarized": 0.8662
+ }
+}

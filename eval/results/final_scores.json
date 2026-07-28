@@ -1,0 +1,146 @@
+{
+ "irt": {
+  "tiers": {
+   "fast": [
+    0.905707,
+    0.935,
+    0.907268,
+    0.914787,
+    0.934837
+   ],
+   "balanced": [
+    0.98263,
+    0.975,
+    0.969925,
+    0.969925,
+    0.977444
+   ],
+   "premium": [
+    0.98263,
+    0.975,
+    0.969925,
+    0.972431,
+    0.982456
+   ]
+  },
+  "cert": [
+   {
+    "risk_hat": 0.058333333333333334,
+    "risk_upper": 0.08969145953881993,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.058333333333333334,
+    "risk_upper": 0.08969145953881993,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.0625,
+    "risk_upper": 0.09460918196538788,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.03333333333333333,
+    "risk_upper": 0.05933924198596149,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.04583333333333333,
+    "risk_upper": 0.07472490775737634,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   }
+  ]
+ },
+ "specialist": {
+  "tiers": {
+   "fast": [
+    1.0,
+    0.9925,
+    0.994987,
+    1.0,
+    0.997494
+   ],
+   "balanced": [
+    1.0,
+    1.0,
+    0.997494,
+    1.0,
+    0.997494
+   ],
+   "premium": [
+    1.0,
+    1.0,
+    0.997494,
+    1.0,
+    0.997494
+   ]
+  },
+  "cert": [
+   {
+    "risk_hat": 0.0,
+    "risk_upper": 0.012404638050409015,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.004166666666666667,
+    "risk_upper": 0.019612599628702362,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.0125,
+    "risk_upper": 0.03198819975403925,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.0,
+    "risk_upper": 0.012404638050409015,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   },
+   {
+    "risk_hat": 0.0,
+    "risk_upper": 0.012404638050409015,
+    "confidence": 0.95,
+    "n_cal": 240,
+    "split": "held-out cert split (λ₀ 선택과 분리)",
+    "dependent": true,
+    "note": "전역 예산 페이싱으로 사건 간 의존성 존재 → 교환가능성 가정 하 상한"
+   }
+  ]
+ }
+}

@@ -1,0 +1,68 @@
+{
+ "cost_estimation_error": {
+  "mean_rel_err": 0.0197,
+  "mae_rel": 0.0789,
+  "p90_underestimate": 0.0695,
+  "frac_underestimated": 0.357
+ },
+ "n": 1000,
+ "n_folds": 3,
+ "arms": {
+  "oracle-cost (기존 암묵 가정)": {
+   "composite": 0.5097,
+   "unanswered": 2,
+   "rejected": 0,
+   "weighted_calls": 1.376
+  },
+  "ridge-cost margin 0.00": {
+   "composite": 0.5012,
+   "unanswered": 2,
+   "rejected": 0,
+   "weighted_calls": 1.389
+  },
+  "ridge-cost margin 0.05": {
+   "composite": 0.5015,
+   "unanswered": 0,
+   "rejected": 0,
+   "weighted_calls": 1.389
+  },
+  "ridge-cost margin 0.15": {
+   "composite": 0.5015,
+   "unanswered": 1,
+   "rejected": 0,
+   "weighted_calls": 1.389
+  },
+  "mean-cost margin 0.05": {
+   "composite": 0.5019,
+   "unanswered": 7,
+   "rejected": 0,
+   "weighted_calls": 1.381
+  },
+  "cluster(k=6) oracle-cost": {
+   "composite": 0.5053,
+   "unanswered": 0,
+   "rejected": 0,
+   "weighted_calls": 1.367
+  },
+  "cluster(k=12) oracle-cost": {
+   "composite": 0.503,
+   "unanswered": 1,
+   "rejected": 0,
+   "weighted_calls": 1.374
+  }
+ },
+ "verdict": {
+  "oracle_cost_baseline": 0.5097,
+  "honest_cost_best": {
+   "arm": "mean-cost margin 0.05",
+   "composite": 0.5019,
+   "delta_vs_oracle": -0.0078
+  },
+  "cluster_best": {
+   "arm": "cluster(k=6) oracle-cost",
+   "composite": 0.5053,
+   "delta_vs_single_group": -0.0044
+  }
+ },
+ "note": "Phase 17. A.X 3모델·Q2=No·textworld·증강 검증기. rejected=비용 과소추정으로 호스트가 거부한 호출 수. cluster=무감독 프롬프트 군집을 다집단 2PL 의 집단 축으로 사용."
+}

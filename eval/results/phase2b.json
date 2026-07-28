@@ -1,0 +1,146 @@
+{
+ "irt": [
+  {
+   "fold": 0,
+   "variant": "irt-enc",
+   "logloss": 0.4584,
+   "ece": 0.0342,
+   "corr_truep": 0.984
+  },
+  {
+   "fold": 0,
+   "variant": "disc-lr",
+   "logloss": 0.4571,
+   "ece": 0.0275,
+   "corr_truep": 0.9834
+  },
+  {
+   "fold": 1,
+   "variant": "irt-enc",
+   "logloss": 0.4613,
+   "ece": 0.0259,
+   "corr_truep": 0.9837
+  },
+  {
+   "fold": 1,
+   "variant": "disc-lr",
+   "logloss": 0.4613,
+   "ece": 0.0257,
+   "corr_truep": 0.983
+  },
+  {
+   "fold": 2,
+   "variant": "irt-enc",
+   "logloss": 0.4416,
+   "ece": 0.0163,
+   "corr_truep": 0.9844
+  },
+  {
+   "fold": 2,
+   "variant": "disc-lr",
+   "logloss": 0.4419,
+   "ece": 0.0174,
+   "corr_truep": 0.9809
+  },
+  {
+   "fold": 3,
+   "variant": "irt-enc",
+   "logloss": 0.4565,
+   "ece": 0.0203,
+   "corr_truep": 0.9819
+  },
+  {
+   "fold": 3,
+   "variant": "disc-lr",
+   "logloss": 0.459,
+   "ece": 0.0244,
+   "corr_truep": 0.9794
+  },
+  {
+   "fold": 4,
+   "variant": "irt-enc",
+   "logloss": 0.4609,
+   "ece": 0.0223,
+   "corr_truep": 0.986
+  },
+  {
+   "fold": 4,
+   "variant": "disc-lr",
+   "logloss": 0.4616,
+   "ece": 0.0285,
+   "corr_truep": 0.9842
+  }
+ ],
+ "specialist": [
+  {
+   "fold": 0,
+   "variant": "irt-enc",
+   "logloss": 0.5827,
+   "ece": 0.0324,
+   "corr_truep": 0.8694
+  },
+  {
+   "fold": 0,
+   "variant": "disc-lr",
+   "logloss": 0.5815,
+   "ece": 0.033,
+   "corr_truep": 0.8678
+  },
+  {
+   "fold": 1,
+   "variant": "irt-enc",
+   "logloss": 0.5836,
+   "ece": 0.0229,
+   "corr_truep": 0.871
+  },
+  {
+   "fold": 1,
+   "variant": "disc-lr",
+   "logloss": 0.5841,
+   "ece": 0.027,
+   "corr_truep": 0.8663
+  },
+  {
+   "fold": 2,
+   "variant": "irt-enc",
+   "logloss": 0.5744,
+   "ece": 0.0381,
+   "corr_truep": 0.8606
+  },
+  {
+   "fold": 2,
+   "variant": "disc-lr",
+   "logloss": 0.576,
+   "ece": 0.0381,
+   "corr_truep": 0.8557
+  },
+  {
+   "fold": 3,
+   "variant": "irt-enc",
+   "logloss": 0.5812,
+   "ece": 0.0181,
+   "corr_truep": 0.8783
+  },
+  {
+   "fold": 3,
+   "variant": "disc-lr",
+   "logloss": 0.5849,
+   "ece": 0.0193,
+   "corr_truep": 0.8725
+  },
+  {
+   "fold": 4,
+   "variant": "irt-enc",
+   "logloss": 0.5949,
+   "ece": 0.0214,
+   "corr_truep": 0.8596
+  },
+  {
+   "fold": 4,
+   "variant": "disc-lr",
+   "logloss": 0.5975,
+   "ece": 0.0217,
+   "corr_truep": 0.8546
+  }
+ ]
+}

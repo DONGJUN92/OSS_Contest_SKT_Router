@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 점수 대조 환경(1.26.x)과 미래 환경(2.x)을 둘 다 돌린다. numpy 2.x 에서 점수가
+        # 미세하게 이동하는 것은 문서화된 사실(D19)이고, 회귀 테스트는 서열·불변식을 보므로
+        # 양쪽에서 통과해야 한다.
+        python-version: ["3.11", "3.12"]
+        numpy: ["1.26.4", "2.*"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+          pip install "numpy==${{ matrix.numpy }}"
+      - name: Show environment
+        run: python -c "import numpy, scipy, sys; print(sys.version); print('numpy', numpy.__version__); print('scipy', scipy.__version__)"
+      - name: Regression suite (challenge rules are encoded here)
+        run: python -m pytest tests/ -q
+      - name: Deployment path imports without experiment scripts
+        run: python -m pytest tests/test_packaging.py -q
+
+  install-smoke:
+    # 오픈소스 재사용성 게이트: 휠을 만들어 **깨끗한 환경에 설치**한 뒤 공개 API 를 부른다.
+    # 이 잡이 Phase 17 이전에는 실패했다 (src/router.py 가 루트 실험 스크립트를 import).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip build
+          python -m build --wheel
+          pip install dist/*.whl
+      - name: Import and fit from an unrelated directory
+        run: |
+          mkdir -p /tmp/elsewhere && cd /tmp/elsewhere
+          python - <<'PY'
+          import numpy as np
+          from src.router import LPBRouter
+          from src.schema import Dataset, ModelMeta
+          from src.harness import run_tier, tier_budgets
+          cfg = {"tiers": {"fast": {"budget_frac": 0.5, "weight": 1.0}}}
+          rng = np.random.default_rng(0)
+          n, M = 240, 3
+          ids = [f"m{k}" for k in range(M)]
+          models = {m: ModelMeta(m, 0.02*(k+1), 0.04*(k+1)) for k, m in enumerate(ids)}
+          th = rng.normal(size=n); b = np.array([0.8, 0.0, -0.8])
+          p = 1/(1+np.exp(-(th[:, None]-b[None, :])))
+          q = (rng.uniform(size=(n, M)) < p).astype(float)
+          ds = Dataset(model_ids=ids, models=models, domains=np.zeros(n, int),
+                       features=np.column_stack([th+rng.normal(0, .3, n), rng.normal(size=(n, 5))]),
+                       in_tokens=np.full(n, 50), out_tokens=np.full((n, M), 120),
+                       quality=q, verifier=np.clip(q+rng.normal(0, .2, (n, M)), 0, 1))
+          r = LPBRouter(cfg, 1, seed=0, use_domain=False).fit(ds, np.arange(60, n), "fast")
+          res = run_tier(ds, np.arange(60), r.policy(), "fast",
+                         tier_budgets(ds, np.arange(60), cfg)["fast"])
+          assert res.unanswered == 0 and 0 <= res.mean_quality <= 1
+          print("install smoke OK", round(res.mean_quality, 4), res.calls_per_query)
+          PY

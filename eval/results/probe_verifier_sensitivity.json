@@ -1,0 +1,99 @@
+{
+ "n": 1200,
+ "n_folds": 3,
+ "base_auc": 0.9123,
+ "rows": [
+  {
+   "target_auc": 0.507,
+   "alpha": 0.98438,
+   "auc": 0.5052,
+   "lpb": 0.4935,
+   "learned": 0.4952,
+   "delta": -0.0017,
+   "sigma_neg_fast": 0.8017,
+   "per_tier": {
+    "lpb": {
+     "fast": 0.3541,
+     "balanced": 0.5781,
+     "premium": 0.7151
+    },
+    "learned": {
+     "fast": 0.3582,
+     "balanced": 0.5657,
+     "premium": 0.7317
+    }
+   }
+  },
+  {
+   "target_auc": 0.725,
+   "alpha": 0.64844,
+   "auc": 0.7251,
+   "lpb": 0.4813,
+   "learned": 0.4952,
+   "delta": -0.0138,
+   "sigma_neg_fast": 0.8248,
+   "per_tier": {
+    "lpb": {
+     "fast": 0.3513,
+     "balanced": 0.5422,
+     "premium": 0.7151
+    },
+    "learned": {
+     "fast": 0.3582,
+     "balanced": 0.5657,
+     "premium": 0.7317
+    }
+   }
+  },
+  {
+   "target_auc": 0.845,
+   "alpha": 0.46875,
+   "auc": 0.8441,
+   "lpb": 0.4842,
+   "learned": 0.4952,
+   "delta": -0.0109,
+   "sigma_neg_fast": 0.8418,
+   "per_tier": {
+    "lpb": {
+     "fast": 0.3555,
+     "balanced": 0.545,
+     "premium": 0.7151
+    },
+    "learned": {
+     "fast": 0.3582,
+     "balanced": 0.5657,
+     "premium": 0.7317
+    }
+   }
+  },
+  {
+   "target_auc": null,
+   "alpha": 0.0,
+   "auc": 0.9123,
+   "lpb": 0.5024,
+   "learned": 0.4952,
+   "delta": 0.0072,
+   "sigma_neg_fast": 0.8364,
+   "per_tier": {
+    "lpb": {
+     "fast": 0.3582,
+     "balanced": 0.5823,
+     "premium": 0.7427
+    },
+    "learned": {
+     "fast": 0.3582,
+     "balanced": 0.5657,
+     "premium": 0.7317
+    }
+   }
+  }
+ ],
+ "crossing_auc": 0.8852,
+ "learned_invariance_check": {
+  "passed": true,
+  "values": [
+   0.4952
+  ]
+ },
+ "note": "§3 법칙 표의 인위 열화 행을 만드는 스크립트 (Phase 20 신설, D50 해소). 열화는 V(α)=(1−α)V+αU 혼합이며 α 는 목표 AUC 로 이분탐색한다."
+}

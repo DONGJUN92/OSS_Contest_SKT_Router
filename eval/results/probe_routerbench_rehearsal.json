@@ -1,0 +1,30 @@
+{
+ "source": "RouterBench-style (구조 모사, 실물 아님)",
+ "n_folds": 5,
+ "branch": {
+  "Q2_multi_sample": "NO (S=1) → Ns=(1,)로 상자 집합 축소, 정책 무변경 (리스크 R1 대응)",
+  "Q4_quality": "binary → 닫힌형 예약지수 σ=1−λc/p̄ 그대로 (현행)"
+ },
+ "composite": {
+  "lpb": 0.8743,
+  "cascade": 0.6699,
+  "learned": 0.6137
+ },
+ "per_tier": {
+  "fast": {
+   "lpb": 0.7874,
+   "cascade": 0.3788,
+   "learned": 0.5639
+  },
+  "balanced": {
+   "lpb": 0.9605,
+   "cascade": 0.9605,
+   "learned": 0.6372
+  },
+  "premium": {
+   "lpb": 0.9622,
+   "cascade": 0.9617,
+   "learned": 0.7033
+  }
+ }
+}

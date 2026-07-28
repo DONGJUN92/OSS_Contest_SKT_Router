@@ -1,0 +1,47 @@
+{
+ "fast": {
+  "lpb": 0.751,
+  "std": 0.005,
+  "cascade": 0.576,
+  "oracle": 0.9915,
+  "ms": 10.756,
+  "cats": {
+   "ok": 75.1,
+   "selection_error": 5.25,
+   "early_stop_regret": 18.5,
+   "budget_ceiling": 0.25,
+   "world_ceiling": 0.85,
+   "unanswered": 0.05
+  }
+ },
+ "balanced": {
+  "lpb": 0.9085,
+  "std": 0.0025,
+  "cascade": 0.6669,
+  "oracle": 0.9915,
+  "ms": 8.229,
+  "cats": {
+   "ok": 90.85,
+   "selection_error": 3.45,
+   "early_stop_regret": 4.85,
+   "budget_ceiling": 0.0,
+   "world_ceiling": 0.85,
+   "unanswered": 0.0
+  }
+ },
+ "premium": {
+  "lpb": 0.957,
+  "std": 0.0107,
+  "cascade": 0.7245,
+  "oracle": 0.9915,
+  "ms": 7.124,
+  "cats": {
+   "ok": 95.7,
+   "selection_error": 1.95,
+   "early_stop_regret": 1.1,
+   "budget_ceiling": 0.1,
+   "world_ceiling": 0.85,
+   "unanswered": 0.3
+  }
+ }
+}

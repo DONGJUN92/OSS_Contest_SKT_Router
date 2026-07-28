@@ -1,0 +1,100 @@
+{
+ "기준: hashing + 선형헤드": {
+  "logloss": 0.5272,
+  "auc": 0.8107,
+  "per_tier": {
+   "fast": 0.3638,
+   "balanced": 0.5823,
+   "premium": 0.7427
+  },
+  "composite": 0.5051,
+  "delta_se": "—",
+  "backend": "hashing",
+  "kwargs": {}
+ },
+ "① rich 특성 + 선형헤드": {
+  "logloss": 0.5845,
+  "auc": 0.7776,
+  "per_tier": {
+   "fast": 0.3638,
+   "balanced": 0.5754,
+   "premium": 0.7455
+  },
+  "composite": 0.5036,
+  "delta_se": "-0.0015(0.0016)",
+  "backend": "rich",
+  "kwargs": {}
+ },
+ "② hashing + 잔차헤드": {
+  "logloss": 0.529,
+  "auc": 0.8098,
+  "per_tier": {
+   "fast": 0.3624,
+   "balanced": 0.5781,
+   "premium": 0.7469
+  },
+  "composite": 0.504,
+  "delta_se": "-0.0011(0.0010)",
+  "backend": "hashing",
+  "kwargs": {
+   "enc_residual": "True"
+  }
+ },
+ "①+② rich + 잔차헤드": {
+  "logloss": 0.6317,
+  "auc": 0.7683,
+  "per_tier": {
+   "fast": 0.3582,
+   "balanced": 0.574,
+   "premium": 0.74
+  },
+  "composite": 0.4993,
+  "delta_se": "-0.0058(0.0017)",
+  "backend": "rich",
+  "kwargs": {
+   "enc_residual": "True"
+  }
+ },
+ "①+② + 은닉층(32)": {
+  "logloss": 1.0466,
+  "auc": 0.7289,
+  "per_tier": {
+   "fast": 0.3665,
+   "balanced": 0.5754,
+   "premium": 0.7427
+  },
+  "composite": 0.5044,
+  "delta_se": "-0.0007(0.0016)",
+  "backend": "rich",
+  "kwargs": {
+   "enc_residual": "True",
+   "enc_hidden": "32"
+  }
+ },
+ "①+② + 군집 pseudo-domain(6)": {
+  "logloss": 0.6277,
+  "auc": 0.7725,
+  "per_tier": {
+   "fast": 0.361,
+   "balanced": 0.5726,
+   "premium": 0.7441
+  },
+  "composite": 0.5011,
+  "delta_se": "-0.0040(0.0017)",
+  "backend": "rich",
+  "kwargs": {
+   "enc_residual": "True",
+   "use_domain": "cluster",
+   "n_clusters": "6"
+  }
+ },
+ "_verdict": {
+  "baseline": 0.5051,
+  "best_arm": "기준: hashing + 선형헤드",
+  "best_composite": 0.5051,
+  "delta": 0.0,
+  "pbar_oracle_reference": 0.614,
+  "captured_of_prediction_headroom": 0.0
+ },
+ "_note": "Phase 19. A.X 3모델·Q2=No·textworld·증강 검증기. 채택은 종합 Δ가 쌍대 SE 를 넘을 때만 (D21)."
+}

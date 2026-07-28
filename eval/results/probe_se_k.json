@@ -1,0 +1,258 @@
+{
+ "n": 1200,
+ "n_folds": 5,
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "abs_margin": 0.005,
+ "grid": [
+  [
+   "se_k=0 · Platt on",
+   0.0,
+   true
+  ],
+  [
+   "se_k=1 · Platt on (현행 기본값)",
+   1.0,
+   true
+  ],
+  [
+   "se_k=2 · Platt on",
+   2.0,
+   true
+  ],
+  [
+   "se_k=0 · Platt off",
+   0.0,
+   false
+  ],
+  [
+   "se_k=1 · Platt off",
+   1.0,
+   false
+  ],
+  [
+   "se_k=2 · Platt off",
+   2.0,
+   false
+  ]
+ ],
+ "arms": {
+  "se_k=0 · Platt on": {
+   "se_k": 0.0,
+   "calibrate_pbar": true,
+   "per_tier": {
+    "fast": 0.3573,
+    "balanced": 0.5719,
+    "premium": 0.7478
+   },
+   "composite": 0.4998,
+   "calls": {
+    "fast": 1.019,
+    "balanced": 1.611,
+    "premium": 2.036
+   },
+   "sigma_neg_fast": 0.6168,
+   "lam0_fast_mean": 118.9227,
+   "vs_base": {
+    "composite_delta": 0.0008,
+    "composite_se": 0.0004,
+    "required": 0.005,
+    "beats_base": false,
+    "per_tier": {
+     "fast": {
+      "delta": 0.0011,
+      "se": 0.0007
+     },
+     "balanced": {
+      "delta": 0.0,
+      "se": 0.0
+     },
+     "premium": {
+      "delta": 0.0011,
+      "se": 0.0008
+     }
+    }
+   }
+  },
+  "se_k=1 · Platt on (현행 기본값)": {
+   "se_k": 1.0,
+   "calibrate_pbar": true,
+   "per_tier": {
+    "fast": 0.3562,
+    "balanced": 0.5719,
+    "premium": 0.7467
+   },
+   "composite": 0.499,
+   "calls": {
+    "fast": 1.016,
+    "balanced": 1.611,
+    "premium": 2.031
+   },
+   "sigma_neg_fast": 0.6752,
+   "lam0_fast_mean": 197.9285
+  },
+  "se_k=2 · Platt on": {
+   "se_k": 2.0,
+   "calibrate_pbar": true,
+   "per_tier": {
+    "fast": 0.3503,
+    "balanced": 0.5699,
+    "premium": 0.7422
+   },
+   "composite": 0.4946,
+   "calls": {
+    "fast": 1.003,
+    "balanced": 1.602,
+    "premium": 2.022
+   },
+   "sigma_neg_fast": 0.9401,
+   "lam0_fast_mean": 555.2801,
+   "vs_base": {
+    "composite_delta": -0.0044,
+    "composite_se": 0.0008,
+    "required": 0.005,
+    "beats_base": false,
+    "per_tier": {
+     "fast": {
+      "delta": -0.0058,
+      "se": 0.0013
+     },
+     "balanced": {
+      "delta": -0.0019,
+      "se": 0.0012
+     },
+     "premium": {
+      "delta": -0.0044,
+      "se": 0.0011
+     }
+    }
+   }
+  },
+  "se_k=0 · Platt off": {
+   "se_k": 0.0,
+   "calibrate_pbar": false,
+   "per_tier": {
+    "fast": 0.3575,
+    "balanced": 0.5727,
+    "premium": 0.7481
+   },
+   "composite": 0.5002,
+   "calls": {
+    "fast": 1.021,
+    "balanced": 1.606,
+    "premium": 2.042
+   },
+   "sigma_neg_fast": 0.588,
+   "lam0_fast_mean": 83.1698,
+   "vs_base": {
+    "composite_delta": 0.0012,
+    "composite_se": 0.0009,
+    "required": 0.005,
+    "beats_base": false,
+    "per_tier": {
+     "fast": {
+      "delta": 0.0014,
+      "se": 0.0011
+     },
+     "balanced": {
+      "delta": 0.0008,
+      "se": 0.0019
+     },
+     "premium": {
+      "delta": 0.0014,
+      "se": 0.0021
+     }
+    }
+   }
+  },
+  "se_k=1 · Platt off": {
+   "se_k": 1.0,
+   "calibrate_pbar": false,
+   "per_tier": {
+    "fast": 0.3559,
+    "balanced": 0.5727,
+    "premium": 0.747
+   },
+   "composite": 0.4992,
+   "calls": {
+    "fast": 1.015,
+    "balanced": 1.606,
+    "premium": 2.037
+   },
+   "sigma_neg_fast": 0.6815,
+   "lam0_fast_mean": 206.9078,
+   "vs_base": {
+    "composite_delta": 0.0002,
+    "composite_se": 0.0008,
+    "required": 0.005,
+    "beats_base": false,
+    "per_tier": {
+     "fast": {
+      "delta": -0.0003,
+      "se": 0.0007
+     },
+     "balanced": {
+      "delta": 0.0008,
+      "se": 0.0019
+     },
+     "premium": {
+      "delta": 0.0003,
+      "se": 0.002
+     }
+    }
+   }
+  },
+  "se_k=2 · Platt off": {
+   "se_k": 2.0,
+   "calibrate_pbar": false,
+   "per_tier": {
+    "fast": 0.3503,
+    "balanced": 0.5736,
+    "premium": 0.7422
+   },
+   "composite": 0.4957,
+   "calls": {
+    "fast": 1.004,
+    "balanced": 1.606,
+    "premium": 2.025
+   },
+   "sigma_neg_fast": 0.9398,
+   "lam0_fast_mean": 571.7008,
+   "vs_base": {
+    "composite_delta": -0.0033,
+    "composite_se": 0.001,
+    "required": 0.005,
+    "beats_base": false,
+    "per_tier": {
+     "fast": {
+      "delta": -0.0058,
+      "se": 0.0013
+     },
+     "balanced": {
+      "delta": 0.0017,
+      "se": 0.002
+     },
+     "premium": {
+      "delta": -0.0044,
+      "se": 0.0022
+     }
+    }
+   }
+  }
+ },
+ "verdict": {
+  "recommended_arm": "se_k=1 · Platt on (현행 기본값)",
+  "recommended_se_k": 1.0,
+  "recommended_calibrate_pbar": true,
+  "changed_default": false,
+  "n_fits_per_arm_per_tier": 15,
+  "max_paired_se": 0.001,
+  "adequately_powered": true,
+  "rule": "기본값을 이기려면 종합 쌍대 차이 > max(0.005, 1×쌍대 SE) — 넘지 못하면 기본값 유지 (D21).",
+  "conclusion": "충분한 검정력에서도 어떤 팔도 문턱을 넘지 못했다 → 기본값이 최적과 구분되지 않는다 (닫힌 결론).",
+  "caveat": "종합 SE 는 tier 를 독립으로 보고 w² 합성한 근사다 (세 tier 가 같은 쿼리를 쓰므로 실제로는 상관이 있다). tier 별 Δ·SE 를 함께 기록했다."
+ }
+}
