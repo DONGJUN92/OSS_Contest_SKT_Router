@@ -1,160 +1,158 @@
 {
  "current13": {
   "composite": {
-   "lpb": 0.5011,
-   "learned": 0.4952,
+   "lpb": 0.499,
+   "learned": 0.4896,
    "cascade_static": 0.3537,
    "cascade_budget": 0.4402,
-   "cascade_routing": 0.5075,
-   "selective3": 0.5028
+   "cascade_routing": 0.5083,
+   "selective3": 0.5021
   },
   "weighted_calls": {
-   "lpb": 1.42,
-   "learned": 0.996,
+   "lpb": 1.421,
+   "learned": 0.994,
    "cascade_static": 0.92,
    "cascade_budget": 1.397,
-   "cascade_routing": 1.233,
-   "selective3": 1.365
-  },
-  "per_tier": {
-   "fast": {
-    "lpb": 0.3555,
-    "learned": 0.3582,
-    "cascade_static": 0.1632,
-    "cascade_budget": 0.3541,
-    "cascade_routing": 0.361,
-    "selective3": 0.3568,
-    "_calls": {
-     "lpb": 1.006,
-     "learned": 0.992,
-     "cascade_static": 0.393,
-     "cascade_budget": 1.021,
-     "cascade_routing": 1.012,
-     "selective3": 1.008
-    }
-   },
-   "balanced": {
-    "lpb": 0.5892,
-    "learned": 0.5657,
-    "cascade_static": 0.5021,
-    "cascade_budget": 0.4633,
-    "cascade_routing": 0.5864,
-    "selective3": 0.5878,
-    "_calls": {
-     "lpb": 1.665,
-     "learned": 1.0,
-     "cascade_static": 1.223,
-     "cascade_budget": 1.556,
-     "cascade_routing": 1.353,
-     "selective3": 1.578
-    }
-   },
-   "premium": {
-    "lpb": 0.7331,
-    "learned": 0.7317,
-    "cascade_static": 0.6072,
-    "cascade_budget": 0.621,
-    "cascade_routing": 0.7552,
-    "selective3": 0.74,
-    "_calls": {
-     "lpb": 2.09,
-     "learned": 1.0,
-     "cascade_static": 1.783,
-     "cascade_budget": 2.097,
-     "cascade_routing": 1.606,
-     "selective3": 1.936
-    }
-   }
-  },
-  "verifier_auc_fast": 0.8596,
-  "sigma_neg_frac_fast": 0.8326,
-  "lpb_minus_learned": 0.0059,
-  "best_policy": "cascade_routing",
-  "selective_picks": {
-   "cascade_routing": 4,
-   "learned": 1,
-   "lpb": 4
-  }
- },
- "augmented": {
-  "composite": {
-   "lpb": 0.5024,
-   "learned": 0.4952,
-   "cascade_static": 0.3313,
-   "cascade_budget": 0.468,
-   "cascade_routing": 0.5091,
-   "selective3": 0.5057
-  },
-  "weighted_calls": {
-   "lpb": 1.387,
-   "learned": 0.996,
-   "cascade_static": 0.875,
-   "cascade_budget": 1.413,
-   "cascade_routing": 1.262,
-   "selective3": 1.33
+   "cascade_routing": 1.239,
+   "selective3": 1.367
   },
   "per_tier": {
    "fast": {
     "lpb": 0.3582,
-    "learned": 0.3582,
-    "cascade_static": 0.1342,
-    "cascade_budget": 0.3555,
-    "cascade_routing": 0.3665,
-    "selective3": 0.361,
+    "learned": 0.3472,
+    "cascade_static": 0.1632,
+    "cascade_budget": 0.3541,
+    "cascade_routing": 0.3624,
+    "selective3": 0.3582,
     "_calls": {
-     "lpb": 1.01,
-     "learned": 0.992,
-     "cascade_static": 0.353,
-     "cascade_budget": 1.028,
-     "cascade_routing": 1.028,
-     "selective3": 1.012
+     "lpb": 1.017,
+     "learned": 0.993,
+     "cascade_static": 0.393,
+     "cascade_budget": 1.021,
+     "cascade_routing": 1.026,
+     "selective3": 1.017
     }
    },
    "balanced": {
-    "lpb": 0.5823,
-    "learned": 0.5657,
-    "cascade_static": 0.3956,
-    "cascade_budget": 0.5159,
-    "cascade_routing": 0.5864,
-    "selective3": 0.5823,
+    "lpb": 0.5795,
+    "learned": 0.5685,
+    "cascade_static": 0.5021,
+    "cascade_budget": 0.4633,
+    "cascade_routing": 0.5878,
+    "selective3": 0.5878,
     "_calls": {
-     "lpb": 1.613,
+     "lpb": 1.656,
      "learned": 1.0,
-     "cascade_static": 1.021,
-     "cascade_budget": 1.598,
-     "cascade_routing": 1.45,
-     "selective3": 1.613
+     "cascade_static": 1.223,
+     "cascade_budget": 1.556,
+     "cascade_routing": 1.342,
+     "selective3": 1.568
     }
    },
    "premium": {
-    "lpb": 0.7427,
-    "learned": 0.7317,
+    "lpb": 0.7303,
+    "learned": 0.7275,
+    "cascade_static": 0.6072,
+    "cascade_budget": 0.621,
+    "cascade_routing": 0.7538,
+    "selective3": 0.7331,
+    "_calls": {
+     "lpb": 2.08,
+     "learned": 0.986,
+     "cascade_static": 1.783,
+     "cascade_budget": 2.097,
+     "cascade_routing": 1.618,
+     "selective3": 1.941
+    }
+   }
+  },
+  "verifier_auc_fast": 0.8596,
+  "sigma_neg_frac_fast": 0.6651,
+  "lpb_minus_learned": 0.0094,
+  "best_policy": "cascade_routing",
+  "selective_picks": {
+   "cascade_routing": 2,
+   "lpb": 7
+  }
+ },
+ "augmented": {
+  "composite": {
+   "lpb": 0.5011,
+   "learned": 0.4896,
+   "cascade_static": 0.3313,
+   "cascade_budget": 0.468,
+   "cascade_routing": 0.5104,
+   "selective3": 0.5116
+  },
+  "weighted_calls": {
+   "lpb": 1.39,
+   "learned": 0.994,
+   "cascade_static": 0.875,
+   "cascade_budget": 1.413,
+   "cascade_routing": 1.262,
+   "selective3": 1.336
+  },
+  "per_tier": {
+   "fast": {
+    "lpb": 0.3527,
+    "learned": 0.3472,
+    "cascade_static": 0.1342,
+    "cascade_budget": 0.3555,
+    "cascade_routing": 0.3651,
+    "selective3": 0.3665,
+    "_calls": {
+     "lpb": 1.01,
+     "learned": 0.993,
+     "cascade_static": 0.353,
+     "cascade_budget": 1.028,
+     "cascade_routing": 1.019,
+     "selective3": 1.018
+    }
+   },
+   "balanced": {
+    "lpb": 0.5864,
+    "learned": 0.5685,
+    "cascade_static": 0.3956,
+    "cascade_budget": 0.5159,
+    "cascade_routing": 0.5864,
+    "selective3": 0.5864,
+    "_calls": {
+     "lpb": 1.609,
+     "learned": 1.0,
+     "cascade_static": 1.021,
+     "cascade_budget": 1.598,
+     "cascade_routing": 1.444,
+     "selective3": 1.609
+    }
+   },
+   "premium": {
+    "lpb": 0.7441,
+    "learned": 0.7275,
     "cascade_static": 0.7275,
     "cascade_budget": 0.6777,
-    "cascade_routing": 0.7497,
-    "selective3": 0.7524,
+    "cascade_routing": 0.7593,
+    "selective3": 0.7621,
     "_calls": {
-     "lpb": 1.992,
-     "learned": 1.0,
+     "lpb": 2.012,
+     "learned": 0.986,
      "cascade_static": 1.963,
      "cascade_budget": 2.101,
-     "cascade_routing": 1.567,
-     "selective3": 1.7
+     "cascade_routing": 1.593,
+     "selective3": 1.722
     }
    }
   },
   "verifier_auc_fast": 0.9143,
-  "sigma_neg_frac_fast": 0.8364,
-  "lpb_minus_learned": 0.0072,
-  "best_policy": "cascade_routing",
+  "sigma_neg_frac_fast": 0.8503,
+  "lpb_minus_learned": 0.0115,
+  "best_policy": "selective3",
   "selective_picks": {
    "cascade_routing": 4,
-   "learned": 1,
-   "lpb": 4
+   "lpb": 5
   }
  },
  "closure": {
-  "delta_lpb_minus_learned": 0.0013,
+  "delta_lpb_minus_learned": 0.0021,
   "lpb_beats_learned": true,
   "lpb_is_best": false,
   "selective_at_least_lpb": true,
@@ -162,8 +160,8 @@
  },
  "note": "Phase 17 레드팀 폐쇄 측정. A.X 3모델·Q2=No·textworld·실 ScoringVerifier. cascade_budget/cascade_routing 은 Phase 17 신설 공정 베이스라인.",
  "arms": {
-  "encoder": "hashing",
-  "margin_mode": "absolute",
+  "encoder": "hashing:512",
+  "margin_mode": "paired_se",
   "folds": 3,
   "n_queries": 1200
  }

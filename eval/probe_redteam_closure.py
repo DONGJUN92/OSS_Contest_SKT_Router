@@ -19,7 +19,17 @@ A.X 3모델 · Q2=No(단일 샘플) · 실텍스트 · 실 ScoringVerifier 다.
 증강 검증기의 `agree_ref` 는 **호출한 출력들 사이의 일치**이므로 단일호출 정책은 원리적으로
 쓸 수 없다 — 그래서 AUC 만으로는 정책 간 비교가 결정되지 않고, 이 측정이 필요하다.
 
+★ Phase 21 (외부 레드팀 2026-08-01) — 두 축을 **인자로** 노출했다. 기본값은 무변경이므로
+헤드라인 표는 그대로 재현되고, 대안 팔은 명시적으로 지정해야 돈다 (D55 의 교훈: 프로브의
+기준 팔은 "기본값"이 아니라 **고정된 구성**이어야 한다).
+
+  --encoder <spec>       프롬프트 인코더 (기본 hashing = 기존 헤드라인 구성)
+  --margin-mode <mode>   SelectiveRouter 채택 규칙 absolute|paired_se (기본 absolute)
+
+산출 파일명은 두 인자에 **의존**한다 — D54(같은 파일에 써서 두 단계가 서로를 덮어씀)의 재발 방지.
+
 사용법: python eval/probe_redteam_closure.py [--folds 3] [--n 1200]
+                                             [--encoder hashing:512] [--margin-mode paired_se]
 """
 import sys, pathlib, json, time
 
@@ -57,12 +67,14 @@ def auc(s, y):
     return float((r[:len(pos)].sum() - len(pos) * (len(pos) + 1) / 2) / (len(pos) * len(neg)))
 
 
-def main(nf=3, n_queries=1200):
+def main(nf=3, n_queries=1200, encoder="hashing", margin_mode="absolute"):
     t0 = time.time()
     cfg = dict(CFG, synth=dict(CFG["synth"], n_queries=n_queries))
     tw = build_textworld(cfg, seed=42)
     ds, meta = to_dataset(tw, cfg, Ns=(1,))                    # Q2=No — 실전 조건
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder(encoder)
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     F_cur = feature_matrix(meta)
     F_aug = augmented_feature_matrix(meta, text_dim=64, use_prompt=True,
                                      use_agreement=True, ref_col=0)
@@ -122,7 +134,8 @@ def main(nf=3, n_queries=1200):
 
                 # 3후보 메타 선택 (LPB 기본 · margin 문턱). cascade_routing 이 LPB 를 이기는
                 # 것이 측정된 뒤 후보로 승격된 것이므로, 이 행이 "데이터가 고른" 결과다.
-                sr = SelectiveRouter(CFG, 1, seed=f, use_domain=False).fit(ds, tr, tier)
+                sr = SelectiveRouter(CFG, 1, seed=f, use_domain=False,
+                                     margin_mode=margin_mode).fit(ds, tr, tier)
                 o = run_tier(ds, te, sr.policy(), tier, b_te)
                 acc["selective3"].append(o.mean_quality)
                 cl["selective3"].append(o.calls_per_query)
@@ -166,13 +179,22 @@ def main(nf=3, n_queries=1200):
     OUT.mkdir(parents=True, exist_ok=True)
     res["note"] = ("Phase 17 레드팀 폐쇄 측정. A.X 3모델·Q2=No·textworld·실 ScoringVerifier. "
                    "cascade_budget/cascade_routing 은 Phase 17 신설 공정 베이스라인.")
-    json.dump(res, open(OUT / "probe_redteam_closure.json", "w", encoding="utf-8"),
-              ensure_ascii=False, indent=1)
-    print(f"  ({time.time() - t0:.0f}s) → eval/results/probe_redteam_closure.json")
+    res["arms"] = {"encoder": encoder, "margin_mode": margin_mode,
+                   "folds": nf, "n_queries": n_queries}
+    # D54: 파일명이 팔에 의존한다. 기본 구성만 헤드라인 파일을 덮어쓴다.
+    suffix = ""
+    if encoder != "hashing":
+        suffix += "_enc-" + encoder.replace(":", "")
+    if margin_mode != "absolute":
+        suffix += "_" + margin_mode
+    path = OUT / f"probe_redteam_closure{suffix}.json"
+    json.dump(res, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print(f"  ({time.time() - t0:.0f}s) → {path.relative_to(ROOT)}")
     return res
 
 
 if __name__ == "__main__":
-    nf = int(sys.argv[sys.argv.index("--folds") + 1]) if "--folds" in sys.argv else 3
-    n = int(sys.argv[sys.argv.index("--n") + 1]) if "--n" in sys.argv else 1200
-    main(nf, n)
+    def _arg(name, default, cast=str):
+        return cast(sys.argv[sys.argv.index(name) + 1]) if name in sys.argv else default
+    main(_arg("--folds", 3, int), _arg("--n", 1200, int),
+         _arg("--encoder", "hashing"), _arg("--margin-mode", "absolute"))

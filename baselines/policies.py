@@ -215,10 +215,47 @@ class SelectiveRouter:
     실데이터·상자 수 무관하게 동작 — 프로토콜은 테스트 미접촉(tr → fit/sel 분할).
     """
 
+    #: ★ D66 (외부 레드팀 2026-08-01) — 채택 규칙의 **목적**을 명시한다.
+    #:
+    #: 지적: 제출 기본값(selective3 0.5057)이 **자기 후보 목록 안의** cascade-routing
+    #: (0.5091)에 지배당한다. 원인은 절대 문턱 0.01 이고, 저장소는 그 비용을 이미
+    #: 측정해 두었다(§4.5.1 "종합 +0.005 수준").
+    #:
+    #: 저장소의 방어는 "유리한 방향으로 문턱을 조정하지 않는다"였다. **그 규칙은 옳지만
+    #: 여기 적용하는 것은 범주 오류다** — 규칙의 목적은 *결과를 본 뒤* 유리하게 고치는 것을
+    #: 막는 것이고, held-out 선택셋에서 argmax 를 고르는 것은 p-hacking 이 아니라 표준
+    #: 모델 선택이다. 보수적 절대 문턱이 정당한 경우는 전환 비용이 **비대칭**일 때인데
+    #: 대회 채점에는 비대칭이 없다(목적함수 = 기대 점수).
+    #:
+    #: 그리고 초판 규칙에는 더 기본적인 결함이 있었다 — **표준오차를 아예 보지 않는다.**
+    #: 게이트는 D26 에서 쌍대 SE 문턱을 도입했는데 `SelectiveRouter` 는 평균 비교뿐이다.
+    #: 즉 절대 문턱 0.01 이 표본 크기와 무관한 고정값으로 두 역할(잡음 방어 + 보수성)을
+    #: 겸하고 있었다.
+    #:
+    #: 그래서 세 모드를 노출한다. **기본값 변경은 측정 후에만** 한다 (D21).
+    #:   "absolute"  : max(margin, se_k·쌍대SE)   — 게이트와 같은 규약
+    #:   "paired_se" : se_k·쌍대SE 만             — 절대 바닥 제거
+    #:   "argmax"    : 0                          — held-out 최고를 그대로 (기대점수 최대화)
+    #:
+    #: ★★ **측정 결과가 감사의 진단을 반박했다 (Phase 21, 그대로 적는다).**
+    #: 감사는 "절대 문턱 0.01 이 전환을 막는다"고 진단했다. 실측하니
+    #:   · `paired_se`(절대 바닥 제거)의 효과는 **정확히 0.0000** — 세 tier 중 둘에서
+    #:     구속하는 것은 절대 문턱이 아니라 **쌍대 SE**(0.0085~0.0183)였다.
+    #:   · 그리고 감사 제안대로 SE 항을 **추가**하자(`se_k` 0 → 1) selective3 가
+    #:     **0.5057 → 0.5007 로 내려갔다.** 전환 4건 중 2건이 막혔고 그 둘은 옳은 전환이었다.
+    #: 즉 이 체제에서 문제는 문턱이 **높아서**가 아니라, 문턱을 더 높이면 손해라는 것이다.
+    #: 그래서 `se_k` 기본값을 **0.0 으로 둔다** — 이것이 Phase 20 까지의 동작(평균 격차 >
+    #: margin)과 정확히 같고, 커밋된 아티팩트를 그대로 재현한다. SE 는 **인자로만** 남긴다.
+    MARGIN_MODES = ("absolute", "paired_se", "argmax")
+
     def __init__(self, cfg, n_domains: int, seed: int = 0, sel_frac: float = 0.3,
-                 margin: float = 0.01, **lpb_kwargs):
+                 margin: float = 0.01, margin_mode: str = "absolute",
+                 se_k: float = 0.0, **lpb_kwargs):
         self.cfg, self.n_dom, self.seed = cfg, n_domains, seed
         self.sel_frac, self.margin, self.lpb_kwargs = sel_frac, margin, lpb_kwargs
+        if margin_mode not in self.MARGIN_MODES:
+            raise ValueError(f"margin_mode 는 {self.MARGIN_MODES} 중 하나여야 합니다")
+        self.margin_mode, self.se_k = margin_mode, float(se_k)
 
     def _fit_learned(self, ds, idx, tier):
         from src.encoder import DiscLR                        # 라이브러리 부품 (Phase 17 이관)
@@ -259,11 +296,29 @@ class SelectiveRouter:
                  "learned": self._fit_learned(ds, tr_fit, tier),
                  "cascade_routing": self._fit_lookahead(ds, tr_fit, tier, lpb)}
         b_sel = tier_budgets(ds, tr_sel, self.cfg)[tier]
-        q = {k: run_tier(ds, tr_sel, p, tier, b_sel).mean_quality for k, p in cands.items()}
-        # LPB 기본 · margin 문턱 (D21 교훈: fold 잡음을 승리로 오인하지 않는다)
+        # D66: **쿼리별** 점수를 보관한다 — 쌍대 차이의 표준오차를 구하려면 평균만으로는
+        # 부족하다. 같은 쿼리에 대한 두 정책의 차이는 쿼리 난이도 분산을 상쇄하므로
+        # 같은 표본으로 훨씬 작은 진짜 차이를 잡아낸다 (게이트 D26 과 같은 논리).
+        pq = {k: np.asarray(run_tier(ds, tr_sel, p, tier, b_sel).per_query, dtype=float)
+              for k, p in cands.items()}
+        q = {k: float(v.mean()) for k, v in pq.items()}
         best = max((k for k in q if k != "lpb"), key=lambda k: q[k])
-        self.chosen = best if q[best] > q["lpb"] + self.margin else "lpb"
+        d = pq[best] - pq["lpb"]
+        se = float(d.std(ddof=1) / np.sqrt(len(d))) if len(d) > 1 else float("inf")
+        # ★ `absolute` 는 **덧셈**이지 `max` 가 아니다. 게이트는 `max(margin, se_k·SE)` 를 쓰지만
+        # 여기서 그렇게 하면 `se_k·SE ≥ 0` 이라 **음수 margin 이 0 으로 바닥**을 맞는다 —
+        # `margin=-1e9` 로 대안을 강제하는 기존 API 계약(회귀 테스트가 쓰는 관용구)이 조용히
+        # 깨진다. 덧셈이면 `se_k=0` 에서 `need == margin` 으로 **Phase 20 규칙과 정확히 동일**
+        # 하고, `se_k>0` 이면 절대 바닥 위에 통계적 여유를 얹은 보수형이 된다.
+        # (조용히 다른 정책이 되느니 계약을 보존한다 — D18·D41 과 같은 철학.)
+        need = {"absolute": self.margin + self.se_k * se,
+                "paired_se": self.se_k * se,
+                "argmax": 0.0}[self.margin_mode]
+        self.chosen = best if float(d.mean()) > need else "lpb"
         self.sel_scores = {k: round(v, 4) for k, v in q.items()}
+        self.sel_detail = {"best_alt": best, "gap": round(float(d.mean()), 4),
+                           "paired_se": round(se, 4), "required": round(need, 4),
+                           "margin_mode": self.margin_mode, "n_sel": int(len(d))}
         # 선택된 정책을 full tr로 재적합 (더 많은 데이터)
         if self.chosen == "lpb":
             self._pol = LPBRouter(self.cfg, self.n_dom, seed=self.seed,

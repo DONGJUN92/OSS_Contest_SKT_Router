@@ -1,0 +1,90 @@
+{
+ "base": "hashing:96",
+ "encoders": [
+  "hashing:96",
+  "hashing:512"
+ ],
+ "folds": 3,
+ "n_queries": 1200,
+ "policies": {
+  "lpb": {
+   "hashing:96": {
+    "per_tier": {
+     "fast": 0.3582,
+     "balanced": 0.5823,
+     "premium": 0.7427
+    },
+    "composite": 0.5024
+   },
+   "hashing:512": {
+    "per_tier": {
+     "fast": 0.3527,
+     "balanced": 0.5864,
+     "premium": 0.7441
+    },
+    "composite": 0.5011,
+    "delta_vs_base": -0.0013,
+    "composite_paired_se": 0.0025,
+    "required_by_D21": 0.005,
+    "passes_D21": false,
+    "per_tier_delta": {
+     "fast": {
+      "delta": -0.0055,
+      "paired_se": 0.0028,
+      "n": 723
+     },
+     "balanced": {
+      "delta": 0.0041,
+      "paired_se": 0.0057,
+      "n": 723
+     },
+     "premium": {
+      "delta": 0.0014,
+      "paired_se": 0.0057,
+      "n": 723
+     }
+    }
+   }
+  },
+  "selective3": {
+   "hashing:96": {
+    "per_tier": {
+     "fast": 0.361,
+     "balanced": 0.5823,
+     "premium": 0.7524
+    },
+    "composite": 0.5057
+   },
+   "hashing:512": {
+    "per_tier": {
+     "fast": 0.3665,
+     "balanced": 0.5864,
+     "premium": 0.7593
+    },
+    "composite": 0.5111,
+    "delta_vs_base": 0.0054,
+    "composite_paired_se": 0.0041,
+    "required_by_D21": 0.005,
+    "passes_D21": true,
+    "per_tier_delta": {
+     "fast": {
+      "delta": 0.0055,
+      "paired_se": 0.0065,
+      "n": 723
+     },
+     "balanced": {
+      "delta": 0.0041,
+      "paired_se": 0.0057,
+      "n": 723
+     },
+     "premium": {
+      "delta": 0.0069,
+      "paired_se": 0.0086,
+      "n": 723
+     }
+    }
+   }
+  }
+ },
+ "note": "Phase 21 D65 후속. 같은 fold·시드에서 인코더만 교체한 쌍대 A/B. 제출 대상(selective3)과 LPB 를 함께 잰다 — 부호가 다를 수 있기 때문(D56). 종합 SE 는 tier 독립 가정의 w² 합성 근사(§2.6 과 동일 한계)."
+}

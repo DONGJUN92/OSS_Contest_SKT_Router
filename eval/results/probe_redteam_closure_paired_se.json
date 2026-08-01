@@ -83,7 +83,7 @@
    "cascade_static": 0.3313,
    "cascade_budget": 0.468,
    "cascade_routing": 0.5091,
-   "selective3": 0.5057
+   "selective3": 0.5007
   },
   "weighted_calls": {
    "lpb": 1.387,
@@ -91,7 +91,7 @@
    "cascade_static": 0.875,
    "cascade_budget": 1.413,
    "cascade_routing": 1.262,
-   "selective3": 1.33
+   "selective3": 1.356
   },
   "per_tier": {
    "fast": {
@@ -100,14 +100,14 @@
     "cascade_static": 0.1342,
     "cascade_budget": 0.3555,
     "cascade_routing": 0.3665,
-    "selective3": 0.361,
+    "selective3": 0.3555,
     "_calls": {
      "lpb": 1.01,
      "learned": 0.992,
      "cascade_static": 0.353,
      "cascade_budget": 1.028,
      "cascade_routing": 1.028,
-     "selective3": 1.012
+     "selective3": 0.999
     }
    },
    "balanced": {
@@ -132,14 +132,14 @@
     "cascade_static": 0.7275,
     "cascade_budget": 0.6777,
     "cascade_routing": 0.7497,
-    "selective3": 0.7524,
+    "selective3": 0.7414,
     "_calls": {
      "lpb": 1.992,
      "learned": 1.0,
      "cascade_static": 1.963,
      "cascade_budget": 2.101,
      "cascade_routing": 1.567,
-     "selective3": 1.7
+     "selective3": 1.863
     }
    }
   },
@@ -148,9 +148,9 @@
   "lpb_minus_learned": 0.0072,
   "best_policy": "cascade_routing",
   "selective_picks": {
-   "cascade_routing": 4,
+   "cascade_routing": 2,
    "learned": 1,
-   "lpb": 4
+   "lpb": 6
   }
  },
  "closure": {
@@ -163,7 +163,7 @@
  "note": "Phase 17 레드팀 폐쇄 측정. A.X 3모델·Q2=No·textworld·실 ScoringVerifier. cascade_budget/cascade_routing 은 Phase 17 신설 공정 베이스라인.",
  "arms": {
   "encoder": "hashing",
-  "margin_mode": "absolute",
+  "margin_mode": "paired_se",
   "folds": 3,
   "n_queries": 1200
  }
