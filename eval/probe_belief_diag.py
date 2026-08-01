@@ -116,7 +116,9 @@ def _build(wname):
     if wname == "textworld":
         tw = build_textworld(CFG, seed=42)
         ds, meta = to_dataset(tw, CFG)
-        ds.features = get_encoder("hashing").encode(meta["prompts"])
+        _enc = get_encoder("hashing")
+        ds.features = _enc.encode(meta["prompts"])
+        ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
         F = feature_matrix(meta)
         folds = ds.stratified_folds(CFG["eval"]["k_folds"], CFG["seed"])
         return ds, F, folds

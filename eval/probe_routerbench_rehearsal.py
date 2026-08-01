@@ -41,7 +41,9 @@ def main(nf=5):
     ds, meta = load_dataset(DATA, CFG)
     rep = validate_dataset(ds, meta, CFG)
     print(format_report(rep))
-    ds.features = get_encoder("hashing").encode(meta["prompts"])   # 프롬프트 → 특성
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])   # 프롬프트 → 특성
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     folds = ds.stratified_folds(CFG["eval"]["k_folds"], CFG["seed"])
     order = list(np.argsort(cost_matrix(ds).mean(axis=0)))
     n_dom = len(np.unique(ds.domains))

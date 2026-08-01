@@ -93,7 +93,9 @@ def _world(name, ns):
     if name == "textworld":
         tw = build_textworld(CFG, seed=42)
         ds, meta = to_dataset(tw, CFG, Ns=ns)
-        ds.features = get_encoder("hashing").encode(meta["prompts"])
+        _enc = get_encoder("hashing")
+        ds.features = _enc.encode(meta["prompts"])
+        ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
         return ds, feature_matrix(meta)
     base = make_world(CFG, name, seed=CFG["seed"]) if name in ("irt", "specialist") \
         else make_world2(CFG, name, seed=CFG["seed"])

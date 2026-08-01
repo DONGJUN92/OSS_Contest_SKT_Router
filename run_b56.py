@@ -48,7 +48,9 @@ def build(wname, votes=True):
     if wname == "textworld":
         tw = build_textworld(CFG, seed=42)                 # Phase 8과 동일 구성
         ds, meta = to_dataset(tw, CFG, Ns=(1, 3, 5) if votes else (1,))
-        ds.features = get_encoder("hashing").encode(meta["prompts"])
+        _enc = get_encoder("hashing")
+        ds.features = _enc.encode(meta["prompts"])
+        ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
         F = feature_matrix(meta)
         folds = ds.stratified_folds(CFG["eval"]["k_folds"], CFG["seed"])
         return ds, folds, (lambda tr: fold_verifier_matrix(F, ds.quality, tr)[0])

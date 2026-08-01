@@ -11,7 +11,9 @@
 ScoringVerifier·TextEncoder·LPBRouter가 무변경으로 소비한다.
 
     ds, meta = load_dataset(path, CFG, FieldSpec(quality="score"))
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     V, _ = fold_verifier_matrix(feature_matrix(meta), ds.quality, train_idx)
     ds.verifier = V                      # 이후는 Phase 8 경로와 완전히 동일
 

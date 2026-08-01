@@ -220,7 +220,9 @@ def test_end_to_end_from_loader_to_harness(world):
     _, _, _, recs = world
     ds, meta = _load(recs)
     validate_dataset(ds, meta, SMALL)
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     tr, te = np.arange(0, 90), np.arange(90, ds.n)
     ds.verifier, _ = fold_verifier_matrix(feature_matrix(meta), ds.quality, tr)
     validate_dataset(ds, meta, SMALL, require_features=True)

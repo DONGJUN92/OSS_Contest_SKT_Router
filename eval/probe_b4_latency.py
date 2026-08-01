@@ -81,7 +81,9 @@ if __name__ == "__main__":
 
     tw = build_textworld(CFG, seed=42)
     f, meta = to_dataset(tw, CFG)
-    f.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    f.features = _enc.encode(meta["prompts"])
+    f.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     tr = np.arange(0, 1600)
     f.verifier, _ = fold_verifier_matrix(feature_matrix(meta), f.quality, tr)
     for tier in ("fast", "balanced"):

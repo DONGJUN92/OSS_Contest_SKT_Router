@@ -94,7 +94,9 @@ def branch_textworld(nf_seed=0):
     cfg["synth"]["n_queries"] = 1000
     tw = build_textworld(cfg, seed=42)
     ds, meta = to_dataset(tw, cfg, Ns=(1,))
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     folds = ds.stratified_folds(5, cfg["eval"]["k_folds"] and cfg["seed"])
     te = folds[0]
     tr = np.setdiff1d(np.arange(ds.n), te)
@@ -109,7 +111,9 @@ def branch_routerbench(subset=2500):
     cfg = yaml.safe_load(open(ROOT / "config_ax3.yaml", encoding="utf-8"))
     ds, meta = load_rb(subset)
     from src.text_encoder import get_encoder
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     # tier 예산 구조는 config 에서 오되 모델 집합은 데이터에서 온다
     cfg = dict(cfg)
     cfg["models"] = {m: {"prefill_price": 0.0, "decode_price": 1e-6} for m in ds.model_ids}

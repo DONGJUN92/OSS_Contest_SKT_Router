@@ -48,7 +48,14 @@ def main():
 
     tw = build_textworld(CFG, seed=42)
     ds, meta = to_dataset(tw, CFG, Ns=(1,))            # 실전 조건: 모델당 출력 1개
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    # ★ D70 (Phase 21): 인코더를 **데이터셋에 실어 둔다.** 초판 데모는 `get_encoder(...)` 를
+    # 익명으로 쓰고 버려서 `ds.text_encoder` 가 없었다 — D36 이 만든 계약(fit() 이 물려받아
+    # 어댑터까지 흘러간다)이 **데모에는 적용되지 않은 상태**였다. [5] 실연을 붙이자마자
+    # 텍스트 프롬프트에서 즉시 죽어 드러났다. D62("고친 대상이 모든 소비 지점에 반영됐는가")
+    # 의 재발이며, 소비 지점을 실제로 밟는 코드를 추가한 것이 검출 기구가 됐다.
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc
     F = augmented_feature_matrix(meta, text_dim=64, use_prompt=True, use_agreement=True)
     folds = ds.stratified_folds(5, CFG["seed"])
     te = folds[0]
@@ -116,6 +123,48 @@ def main():
     c = routers["fast"].certificate
     print(f" 조기정지 후회율 ≤ {c['risk_upper']:.4f} @ {c['confidence']:.0%} (n={c['n_cal']})")
     print(f" {c['note']}")
+
+    # ── [5] 제출 규약 실연 (Phase 21) ────────────────────────────────────────────
+    # 시연영상이 보여줘야 하는 것은 점수표가 아니라 **챌린지 인터페이스가 실제로 도는 것**이다.
+    # 텍스트 프롬프트 + **토큰당 단가 메타데이터**로 호스트 루프를 그대로 흉내낸다.
+    print(f"\n{BAR}\n [5] 제출 규약 실연 — 텍스트 프롬프트 · 단가 메타데이터 · 호출 상한\n{BAR}")
+    from src.submission import SubmissionRouter
+    r_fast = LPBRouter(CFG, 1, seed=0, use_domain=False,
+                       cost_mode="ridge", cost_margin=0.05).fit(ds, tr, "fast")
+    sub = SubmissionRouter({"fast": r_fast}, list(ds.model_ids),
+                           observe=lambda p, mid, rec: float(ds.verifier[rec["_row"],
+                                                                         rec["_m"]]))
+    price_meta = {mid: {"prefill_price": CFG["models"][mid]["prefill_price"],
+                        "decode_price": CFG["models"][mid]["decode_price"]}
+                  for mid in ds.model_ids}
+    print(" 호스트가 주는 것 = 프롬프트(텍스트) + **단가 정책**(비용이 아니다) + 잔여 예산·호출 수")
+    b = tier_budgets(ds, te, CFG)["fast"]
+    sub.begin_tier("fast", budget=b, n_queries=len(te))
+    remaining, answered, viol = b, 0, 0
+    for k, i in enumerate(te[:120]):
+        i = int(i)
+        hist, spent = [], 0.0
+        while True:
+            act = sub.step(meta["prompts"][i], "fast", hist, price_meta,
+                           remaining_budget=remaining - spent, remaining_calls=3 - len(hist))
+            if act.kind != "call":
+                if act.kind == "answer" and act.model_id not in [h["model_id"] for h in hist]:
+                    viol += 1
+                answered += act.kind == "answer"
+                break
+            m = sub.index[act.model_id]
+            spent += float(cmat[i, m])
+            hist.append({"model_id": act.model_id, "output": "...", "_row": i, "_m": m})
+        if k < 2:
+            print(f"   예시 {k + 1}: \"{meta['prompts'][i][:52]}...\"")
+            print(f"       → 연 상자 {[h['model_id'] for h in hist]}  최종 {act.kind}:"
+                  f"{act.model_id}  지출 {spent:.5f}")
+        remaining -= spent
+        sub.end_query(spent, "fast")
+    print(f" 120문항: 응답 {answered} · **규칙 위반 0건**"
+          f" (answer∈called {viol == 0}) · 지출 {b - remaining:.4f}/{b:.4f}")
+    print(f" 비용 경로 = {sub.cost_path}  (단가 → 프리필+디코드 추정으로 조립)")
+
     print(f"\n ({time.time() - t0:.0f}s) 데모 종료. 전체 재현: python reproduce.py\n")
 
 

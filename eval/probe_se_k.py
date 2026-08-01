@@ -70,7 +70,9 @@ def main(nf=5, n_queries=1200, seeds=(0, 1, 2)):
     cfg = dict(CFG, synth=dict(CFG["synth"], n_queries=n_queries))
     tw = build_textworld(cfg, seed=42)
     ds, meta = to_dataset(tw, cfg, Ns=(1,))                 # 실전 조건 (Q2=No)
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     ds.text_encoder = get_encoder("hashing")                # D36: 배포 경로 정합
     F = augmented_feature_matrix(meta, text_dim=64, use_prompt=True, use_agreement=True)
     folds = ds.stratified_folds(CFG["eval"]["k_folds"], CFG["seed"])

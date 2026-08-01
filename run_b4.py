@@ -42,7 +42,9 @@ def build_fc(seed=42, graded=True, scale="strict"):
     if key not in _CACHE:
         tw = build_textworld(CFG, seed=seed)
         ds, meta = to_dataset(tw, CFG, graded=graded, scale=scale)
-        ds.features = get_encoder("hashing").encode(meta["prompts"])
+        _enc = get_encoder("hashing")
+        ds.features = _enc.encode(meta["prompts"])
+        ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
         F = feature_matrix(meta)
         folds = ds.stratified_folds(CFG["eval"]["k_folds"], CFG["seed"])
         _CACHE[key] = (ds, meta, F, folds)

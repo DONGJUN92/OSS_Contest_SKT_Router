@@ -134,7 +134,9 @@ def _submitted_router(ds, tr, tier_frac, cfg_like):
 def main(subset=None, per_bench=False, observation="noisy", with_router=False):
     t0 = time.time()
     ds, meta = load_rb(subset)
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     cmat = cost_matrix(ds)
     N = ds.n
     rng = np.random.default_rng(42)
