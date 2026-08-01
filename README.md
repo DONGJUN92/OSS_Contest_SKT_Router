@@ -24,7 +24,7 @@ python -m src.gate <데이터경로> --quick   # 실데이터 수령 시 첫 명
 | **출력** | `Action("call", id)` · `Action("answer", id)` · `Action("abstain", "")` |
 | **결정 규칙** | 예약값 `E[(X−σ_m)⁺]=λc_m` 로 열고, `max 관측상금 ≥ max 잔여 σ` 면 멈춘다 (전체 5줄, 아래 §정책) |
 | **예산 안전** | shadow price λ 페이싱 + 생존 모드 → 적대적 도착 순서에서 무응답 **96–266 → 0** |
-| **규칙 준수** | 답은 항상 호출한 모델 · 외부 API 0 · 회귀 테스트 **110종**이 규칙을 불변식으로 고정 |
+| **규칙 준수** | 답은 항상 호출한 모델 · **외부 AI API 0건** · 기본 구성에 **탑재된 제3자 AI 모델 0건**(기본 인코더는 가중치 없는 해시 함수) · 회귀 **115종** |
 | **지연** | 스텝당 **0.24–0.76 ms**, 문항당 가중 **1.12 ms** (tie-break 축 — `eval/probe_latency.py`, 오프라인 적합 3–6s 는 채점 중 미발생이라 분리 보고) |
 | **배포 정책 선택** | 사람이 아니라 **게이트가 데이터로** 고른다 (`src/gate.py`) |
 
@@ -41,7 +41,8 @@ python -m src.gate <데이터경로> --quick   # 실데이터 수령 시 첫 명
 [`docs/related_work.md`](docs/related_work.md).
 
 English: [`README.en.md`](README.en.md) · 기여: [`CONTRIBUTING.md`](CONTRIBUTING.md) ·
-라이선스 명세: [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md)
+라이선스 명세: [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) ·
+AI 모델 활용 명세(제9조·붙임2): [`docs/ai_model_disclosure.md`](docs/ai_model_disclosure.md)
 
 ## 정책 (전체가 5줄)
 
@@ -111,7 +112,7 @@ English: [`README.en.md`](README.en.md) · 기여: [`CONTRIBUTING.md`](CONTRIBUT
   **단 이상화 엔진**(정확 관측 `ExactNoise` + 갱신 없는 `FixedBelief`) 한정이다. 배포
   라우터는 잡음 관측 + θ 갱신(=상관 상자)이라 이 증명이 전이되지 않는다
 - 강건성: 시드 9/9 셀 서열 유지, 검증기 잡음 ×2에 품질 −0.01, 적대적 도착 순서에 무응답 0
-- 회귀 방벽: `pytest tests/ -q` → **110/110** (규칙 불변식 포함 — 예산 초과·**미호출 모델 답
+- 회귀 방벽: `pytest tests/ -q` → **115/115** (규칙 불변식 포함 — 예산 초과·**미호출 모델 답
   지명**·호출 상한·패키징·Phase 17 결함 13종·**배포 게이트 4종**(예측층 무권한·SE 문턱)
   ·**Phase 20 배포 경로 14종**(텍스트 프롬프트·관측 이력·거절 루프·문항 경계·생존 모드 발동
   ·λ 선택 래칫) ·**Phase 21 신규 19종**(단가 정책 비용 규약·문항별 호출 상한·게이트 진행/부분저장
@@ -180,6 +181,7 @@ eval/make_figures.py   제출용 그림 (결과 JSON만 읽음 — 하드코딩 
 tests/                 회귀 방벽 (규칙 불변식·DP 최적성·로더 왕복·호출상한·★패키징)
 docs/reflections/      단계별 self-reflection (결함 D1~D67. phase20~21 = 외부 감사 대응)
 docs/related_work.md   ◆ 선행연구·경쟁 OSS 대조 (우선권 고지 · LLMRouter/RouteLLM 비교표)
+docs/ai_model_disclosure.md  ◆ 운영규정 제9조 대조표 + 결과보고서 붙임2 초안
 docs/branch_decision_table.md   주최측 답변 → 코드 분기 매핑 + 수령 당일 런북
 CONTRIBUTING.md · THIRD_PARTY_LICENSES.md · .github/workflows/ci.yml
 

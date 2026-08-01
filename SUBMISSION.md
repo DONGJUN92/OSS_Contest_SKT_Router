@@ -11,7 +11,7 @@ Phase 20 기준 (2026-07-27) · 라이선스 Apache-2.0 · 실데이터 미수�
 >
 > | 항목 | 결과 |
 > |---|---|
-> | 회귀 방벽 | **110/110** (Phase 21 기준; Phase 20 시점 86종 + `tests/test_deploy_fixes.py` 14종 신규 — push 경로가 처음으로 방벽 안에 들어왔다) |
+> | 회귀 방벽 | **115/115** (Phase 21 기준; Phase 20 시점 86종 + `tests/test_deploy_fixes.py` 14종 신규 — push 경로가 처음으로 방벽 안에 들어왔다) |
 > | 배포 경로 | 텍스트 프롬프트 · 관측 이력 · 거절 루프 · 문항 경계 · 생존 모드 · 게이트 산출물 — 전부 수정·고정 |
 > | **§2 헤드라인** | LPB 0.5051 → **0.5024** (튜너 수정이 **불리하게** 나왔고 그대로 실었다) |
 > | **§2.2 상한** | ★ Phase 19 의 "예측기 축 여지 0%" 결론이 **뒤집혔다** (−0.0032 → **+0.0123**) |
@@ -1086,7 +1086,7 @@ Phase 20 이 "측정 경계를 넓혔다"고 선언한 그 경계 밖에 하나�
 
 ```bash
 pip install -e ".[dev]"
-python -m pytest tests/ -q          # 110/110 — 규칙과 배포 경로가 불변식으로 들어 있다
+python -m pytest tests/ -q          # 115/115 — 규칙과 배포 경로가 불변식으로 들어 있다
 python -m src.gate <데이터경로>       # ★ 실데이터 수령 시 첫 명령 (배포 정책 자동 결정, §4.5)
 python demo.py                      # 3분 시연 (네트워크 불필요)
 python reproduce.py --list          # 어떤 단계가 어떤 표를 만드는지
@@ -1126,6 +1126,15 @@ python reproduce.py --bench         # + 실물 RouterBench (데이터 다운로�
 | 결과보고서 | 이 문서 (`SUBMISSION.md`) |
 | 시연영상 | `docs/demo_script.md` (내레이션 스크립트) + `demo.py` (촬영 대상, 결정론적) |
 | 소스코드 | 저장소 전체. `README.md` / `README.en.md` / `CONTRIBUTING.md` |
+
+| AI 모델 활용 및 라이선스 기술 명세서 (붙임2) | `docs/ai_model_disclosure.md` |
+
+**운영규정 제9조(AI 모델 활용의 기준) 대응**: 제출 **기본 구성에 탑재된 제3자 AI 모델은
+0건**이다 — 라우터 추론 경로는 numpy·scipy 만 쓰고, 프롬프트 인코더 기본값은 **학습된
+가중치가 없는 결정론적 해시 함수**다. 외부 AI API 호출은 코드 전체에서 0건(회귀로 고정).
+선택 활성화 가능한 임베딩 4종(all-MiniLM-L6-v2 / bge-m3 / multilingual-e5-small /
+paraphrase-multilingual-MiniLM-L12-v2)은 **전부 오픈웨이트·로컬 구동**이며 라이선스는
+Apache-2.0·MIT 로 HF Hub API 직접 조회로 확인했다. 상세·대조표: `docs/ai_model_disclosure.md`.
 
 라이선스 Apache-2.0. 의존성·데이터 출처·카피레프트 부재 확인: `THIRD_PARTY_LICENSES.md`
 (2차 심사 라이선스 검증 대응). 라우터 추론 경로는 numpy·scipy 만 사용하며 외부 API·네트워크

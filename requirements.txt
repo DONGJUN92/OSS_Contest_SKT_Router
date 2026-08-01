@@ -10,4 +10,23 @@ numpy>=1.26,<2.0
 pyyaml>=6.0
 scipy>=1.11
 matplotlib>=3.8
-sentence-transformers>=3.0  # 선택: TextEncoder st 백엔드 (기본은 hashing, 의존성 불필요)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ★ 여기부터는 **기본 설치에 넣지 않는다** (대회 운영규정 제9조 대응, 2026-08-01)
+#
+# 초판은 `sentence-transformers` 를 이 파일에 넣어 두고 주석으로만 "선택"이라 적었다.
+# 그런데 README 가 안내하는 명령이 `pip install -r requirements.txt` 이므로 **기본 설치가
+# 실제로는 임베딩 모델 스택(torch·transformers·huggingface_hub)을 끌어왔다.**
+# 문서가 선언한 자세("기본은 hashing, 의존성 0")와 코드가 어긋나 있었고, 그만큼
+# 제출물의 **AI 모델 표면이 불필요하게 넓어져 있었다.**
+#
+# 기본 구성의 인코더는 `HashingEncoder`(문자 3-gram signed hashing)이고 이것은
+# **학습된 가중치가 없는 순수 결정론적 해시 함수**다 — AI 모델이 아니다.
+# 임베딩 모델이 필요하면 명시적으로 설치한다:
+#
+#     pip install -e ".[st]"        # 또는  pip install sentence-transformers>=3.0
+#
+# 그 경우 내려받는 **모델 가중치**는 패키지와 별도 라이선스이며, 오픈웨이트 모델만
+# 사용하고 `THIRD_PARTY_LICENSES.md` §2.1 과 `docs/ai_model_disclosure.md`(붙임2)에
+# 기재해야 한다. 상용 API 전용 임베딩(OpenAI Embedding 등)은 **사용 불가**다.
+# ─────────────────────────────────────────────────────────────────────────────

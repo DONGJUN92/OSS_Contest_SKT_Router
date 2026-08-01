@@ -29,10 +29,30 @@
 | pandas / pyarrow | BSD 3-Clause / Apache-2.0 | 실벤치 재현(`eval/routerbench_real.py`) 전용 |
 | huggingface_hub | Apache-2.0 | 실벤치 데이터 다운로드 전용 |
 
-**주의**: `sentence-transformers` 의 `st` 백엔드가 내려받는 **모델 가중치**는 패키지와 별도
-라이선스입니다. 기본값 `all-MiniLM-L6-v2` 는 Apache-2.0 이지만, 다른 백본으로 교체할 때는
-그 모델의 라이선스를 확인해야 합니다. 챌린지 제출 구성은 `hashing` 백엔드(의존성·다운로드 0)를
-기본으로 하므로 이 문제를 회피합니다.
+⚠ **정정 (2026-08-01)**: 위 표의 `sentence-transformers` 는 `pyproject.toml` 에서는
+extras 인데 **`requirements.txt` 에는 기본 설치로 들어가 있었습니다.** README 안내 명령이
+`pip install -r requirements.txt` 이므로 **기본 설치가 실제로는 임베딩 모델 스택
+(torch·transformers·huggingface_hub)을 끌어왔습니다** — 문서가 선언한 자세("기본은 hashing,
+의존성 0")와 어긋나 있었습니다. 기본 설치에서 제거했습니다.
+
+## 2.1 사전학습 모델 가중치 (선택 — 활성화 시에만 탑재)
+
+`sentence-transformers` 백엔드가 내려받는 **모델 가중치**는 패키지와 **별도 라이선스**입니다.
+2026-08-01 HuggingFace Hub API 로 직접 조회해 확인했습니다:
+
+| 모델 | 라이선스 | 공개 수준 | 로컬 구동 | 언제 쓰이나 |
+|---|---|---|---|---|
+| `sentence-transformers/all-MiniLM-L6-v2` | **Apache-2.0** | 오픈웨이트 | ✅ | `get_encoder("st")` |
+| `BAAI/bge-m3` | **MIT** | 오픈웨이트 | ✅ | `st:multilingual` 1순위 |
+| `intfloat/multilingual-e5-small` | **MIT** | 오픈웨이트 | ✅ | 2순위 폴백 |
+| `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | **Apache-2.0** | 오픈웨이트 | ✅ | 3순위 폴백 |
+
+전부 permissive 이므로 본 저작물(Apache-2.0) 배포와 충돌이 없고, **가중치를 저장소에
+재배포하지 않습니다**(사용자가 원 배포처에서 직접 내려받습니다).
+
+**챌린지 제출 기본 구성은 `hashing` 백엔드**(학습된 가중치가 없는 결정론적 해시 함수,
+다운로드·의존성 0)이므로 **기본 상태에서는 제3자 AI 모델이 탑재되지 않습니다.**
+대회 운영규정 제9조 대조표와 붙임2 초안: **[`docs/ai_model_disclosure.md`](docs/ai_model_disclosure.md)**.
 
 ## 3. 데이터 출처
 

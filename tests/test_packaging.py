@@ -95,3 +95,88 @@ def test_phase2_stages_shim_is_same_object():
     assert phase2_stages.IRTEncoder is encoder.IRTEncoder
     assert phase2_stages.DiscLR is encoder.DiscLR
     assert phase2_stages.C_PROBIT == encoder.C_PROBIT
+
+
+# ═══════ 대회 운영규정 제9조 (AI 모델 활용의 기준) — 컴플라이언스 불변식 ═══════
+#
+# 규정 요지: 출품작에 탑재·적용되는 모든 AI 모델은 최소 오픈웨이트여야 하고, 판단 기준은
+# **로컬/자체 서버에서 직접 구동 가능한가**다. 상용 API 전용 모델(임베딩 포함)은 불가.
+#
+# 이 저장소는 위반이 없었지만, **선언한 자세와 실제 기본값이 어긋난 곳이 두 군데** 있었다
+# (requirements.txt 가 임베딩 스택을 기본 설치에 포함 · 인코더 스캔이 bge-m3 를 자동
+# 다운로드). 문서로만 지키면 또 어긋나므로 불변식으로 고정한다.
+# 상세: docs/ai_model_disclosure.md
+
+def test_no_external_ai_api_anywhere_in_the_repository():
+    """상용 AI API 클라이언트가 저장소 어디에도 없어야 한다 (독립 구동 가능성)."""
+    import pathlib, re
+    root = pathlib.Path(__file__).resolve().parents[1]
+    banned = re.compile(
+        r"^\s*(import|from)\s+(requests|urllib|httpx|aiohttp|openai|anthropic|cohere|"
+        r"boto3|azure|google\.generativeai)\b", re.M)
+    hits = []
+    for f in root.rglob("*.py"):
+        if any(p in f.parts for p in (".git", "__pycache__", ".venv", "build", "dist")):
+            continue
+        m = banned.search(f.read_text(encoding="utf-8", errors="ignore"))
+        if m:
+            hits.append(f"{f.relative_to(root)}: {m.group(0).strip()}")
+    assert not hits, f"외부 API 클라이언트 발견 (제9조 제2항 제1호 다목 위반 위험): {hits}"
+
+
+def test_default_install_pulls_no_pretrained_model_stack():
+    """기본 설치가 임베딩 모델 스택을 끌어오면 안 된다.
+
+    `requirements.txt` 가 `sentence-transformers` 를 기본에 넣고 있었다 — README 안내
+    명령이 `pip install -r requirements.txt` 이므로 기본 설치가 실제로 torch·transformers
+    까지 끌어왔다. 문서는 "기본은 hashing, 의존성 0"이라 적고 있었다.
+    """
+    import pathlib
+    root = pathlib.Path(__file__).resolve().parents[1]
+    active = [ln.split("#")[0].strip()
+              for ln in (root / "requirements.txt").read_text(encoding="utf-8").splitlines()
+              if ln.strip() and not ln.strip().startswith("#")]
+    joined = " ".join(active).lower()
+    for pkg in ("sentence-transformers", "torch", "transformers", "huggingface"):
+        assert pkg not in joined, (
+            f"기본 설치에 {pkg} 가 있다 — 제출물의 AI 모델 표면이 불필요하게 넓어진다. "
+            f"extras 로 옮길 것 (`pip install -e \".[st]\"`)")
+
+
+def test_default_encoder_carries_no_learned_weights():
+    """기본 인코더는 결정론적 해시 함수여야 한다 (제9조의 'AI 모델'에 해당하지 않음)."""
+    from src.text_encoder import get_encoder, HashingEncoder
+    e = get_encoder("hashing")
+    assert isinstance(e, HashingEncoder)
+    assert not hasattr(e, "model"), "기본 인코더가 모델 객체를 들고 있다"
+    a = get_encoder("hashing").encode(["한국어 프롬프트 테스트"])
+    b = get_encoder("hashing").encode(["한국어 프롬프트 테스트"])
+    assert np.array_equal(a, b), "해시 인코더는 결정론적이어야 한다 (학습 상태 없음)"
+
+
+def test_encoder_scan_does_not_download_a_model_by_default():
+    """`--scan-encoders` 기본 후보가 사전학습 모델을 자동으로 내려받으면 안 된다.
+
+    초판은 `st:multilingual` 이 기본 후보라 BAAI/bge-m3(≈2.2GB)를 자동 다운로드했다.
+    라이선스 문제는 없으나(오픈웨이트·MIT) ① 기본값이 모델을 끌어오면 "탑재 모델 0건"이라는
+    가장 깨끗한 상태를 잃고 붙임2 기재 대상이 되며 ② 오프라인 심사 환경에서 실패한다.
+    """
+    from src.encoder_scan import default_candidates
+    from src.text_encoder import HashingEncoder
+    d = default_candidates()
+    assert d and all(isinstance(v, HashingEncoder) for v in d.values()), (
+        f"기본 후보에 사전학습 모델이 있다: "
+        f"{ {k: type(v).__name__ for k, v in d.items()} }")
+
+
+def test_ai_model_disclosure_document_exists_and_lists_licenses():
+    """붙임2(AI 모델 활용 및 라이선스 기술 명세서) 대응 문서가 있어야 한다."""
+    import pathlib
+    root = pathlib.Path(__file__).resolve().parents[1]
+    doc = root / "docs" / "ai_model_disclosure.md"
+    assert doc.exists(), "제9조 대응 명세서가 없다"
+    txt = doc.read_text(encoding="utf-8")
+    for model in ("all-MiniLM-L6-v2", "BAAI/bge-m3", "multilingual-e5-small"):
+        assert model in txt, f"{model} 이 명세서에 없다"
+    for lic in ("Apache-2.0", "MIT"):
+        assert lic in txt, f"{lic} 라이선스 표기가 없다"

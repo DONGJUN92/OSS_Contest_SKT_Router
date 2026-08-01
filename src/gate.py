@@ -366,7 +366,11 @@ USAGE = """사용법
   --splits N            결정층 fold 수 (기본 5)
   --repeats R           반복 교차검증 횟수 (기본 3)
   --encoder <name>      프롬프트 인코더: hashing | hashing:<dim> | st | st:<model>
-  --scan-encoders       ★ 인코더 후보를 예측기 품질로 먼저 고른다 (D65, §N5/N6)
+  --scan-encoders       ★ 인코더 후보를 예측기 품질로 먼저 고른다 (D65, §N5/N6).
+                        기본 후보는 **해싱만** (가중치 없음 = AI 모델 미탑재)
+  --with-st             ↑에 사전학습 임베딩(다국어)을 후보로 추가. 오픈웨이트 모델을
+                        내려받아 **로컬 구동**하며, 채택 시 결과보고서 붙임2 기재 대상
+                        (`docs/ai_model_disclosure.md`)
   --out <path>          판정 아티팩트 경로 (기본 eval/results/gate_decision.json)
   --quiet               진행 표시 끄기
 """
@@ -405,8 +409,11 @@ def _cli():                                                    # pragma: no cove
         # → SubmissionRouter 가 런타임 텍스트 프롬프트를 같은 공간으로 인코딩할 수 있다.
         if "--scan-encoders" in args:
             from .encoder_scan import scan_encoders, default_candidates, apply_encoder
+            # `--with-st` 없이는 해싱 후보만 — 사전학습 임베딩은 명시적으로 켠다
+            # (운영규정 제9조: 탑재하면 붙임2 기재 대상. `docs/ai_model_disclosure.md` 참조)
             rep = scan_encoders(meta["prompts"], ds, np.arange(int(0.7 * ds.n)),
-                                default_candidates(), verbose="--quiet" not in args)
+                                default_candidates(include_st="--with-st" in args),
+                                verbose="--quiet" not in args)
             apply_encoder(ds, meta["prompts"], rep.best_encoder)
             print(rep.table())
         else:

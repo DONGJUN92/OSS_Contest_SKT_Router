@@ -80,13 +80,32 @@ class EncoderScan:
         return "\n".join(out)
 
 
-def default_candidates() -> dict:
-    """기본 후보군. ST 백엔드는 미설치·미캐시면 `get_encoder` 가 해싱으로 폴백하므로
-    그 경우 중복 팔이 생긴다 — `scan_encoders` 가 특성 동일성으로 감지해 제외한다."""
+def default_candidates(include_st: bool = False) -> dict:
+    """기본 후보군 — **해싱만.** ST(사전학습 임베딩)는 `include_st=True` 로 명시해야 들어간다.
+
+    ★ 왜 기본에서 뺐는가 (대회 운영규정 제9조 대응, 2026-08-01)
+    ---------------------------------------------------------
+    초판은 `st:multilingual` 을 기본 후보에 넣었다. 그러면 `--scan-encoders` 를 켜는 순간
+    **`BAAI/bge-m3`(≈2.2GB)를 내려받는다** — 실측으로 확인했다(첫 호출이 수 분).
+
+    라이선스상 문제는 없다(모두 오픈웨이트·MIT/Apache-2.0이고 로컬 구동이므로 제9조
+    제2항의 '독립 구동 가능성'을 충족한다). 그러나 두 가지가 걸린다.
+      ① **제출물의 AI 모델 표면**: 기본값이 모델을 끌어오면 "탑재된 AI 모델 0개"라는
+         가장 깨끗한 상태를 스스로 버리게 되고, 붙임2(AI 모델 활용 명세서) 기재 대상이
+         된다. 필요해서 쓰는 것과 기본값이라 딸려오는 것은 다르다.
+      ② **심사 환경**: 오프라인이거나 대역폭이 없으면 그 자리에서 실패한다.
+
+    그래서 기본은 해싱(가중치 없는 결정론적 해시 함수 — AI 모델이 아니다)만 두고,
+    임베딩 모델은 **운영자가 명시적으로 켜고 명세서에 적는** 구조로 만든다.
+    한국어 실데이터에서 ST 가 필요하다고 판단되면 `include_st=True` 로 켠다.
+    """
     from .text_encoder import get_encoder
-    return {"hashing96": get_encoder("hashing:96"),
-            "hashing256": get_encoder("hashing:256"),
-            "st-multilingual": get_encoder("st:multilingual")}
+    cands = {"hashing96": get_encoder("hashing:96"),
+             "hashing256": get_encoder("hashing:256"),
+             "hashing512": get_encoder("hashing:512")}
+    if include_st:
+        cands["st-multilingual"] = get_encoder("st:multilingual")
+    return cands
 
 
 def _logloss(p: np.ndarray, y: np.ndarray) -> np.ndarray:
