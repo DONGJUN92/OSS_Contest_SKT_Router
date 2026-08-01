@@ -52,11 +52,18 @@ For the host's push-style protocol (the harness asks you for one action at a tim
 `src/submission.py`:
 
 ```python
-act = sub.step(prompt, tier, call_history, model_metadata, remaining_budget)
+act = sub.step(prompt, tier, call_history, model_metadata, remaining_budget,
+               remaining_calls=None, prompt_tokens=None)
 # Action("call", model_id) | Action("answer", model_id) | Action("abstain", "")
 ```
 
 `answer` is guaranteed to name a model that appears in `call_history` (rule invariant, tested).
+
+`model_metadata` may be **either** per-candidate costs **or a token price policy** — the contest
+gives you prices before the call and the actual cost only after it. `CostSpec` absorbs the key
+names and the price unit, and the fitted `DecodeLengthEstimator` supplies the unknown decode
+length; if none of the three sources is available the adapter **fails loudly instead of guessing**,
+because a wrong cost silently rescales the whole reservation index. See `src/submission.py`.
 
 ## What is actually established, and what is not
 
@@ -81,16 +88,28 @@ This section is deliberately blunt; the numbers move a lot with configuration.
   is made by direct policy comparison on the received data (`src/gate.py`), not by a constant.
 - In the highest-weighted `fast` tier the policy still makes **~1.0 calls/query** (most σ < 0), so
   the sequential machinery is largely inactive exactly where the score weight is highest. Phase 18
-  did not remove that degeneracy — it improved the accuracy of that single pick (finer λ grid +
-  per-model Platt recalibration, +0.0083 = 2.1x paired SE).
+  did not remove that degeneracy; Phase 20 then showed the fix does not pay (+0.0012), and
+  **Phase 21 showed why**: split the remaining headroom by tier and `fast` holds only **8 %** of it
+  despite carrying half the weight — the whole band between "always cheapest" and "true
+  probabilities + perfect grading" is worth 0.0097 there. The headroom is in `balanced` (47 %) and
+  `premium` (45 %), which is exactly where `CascadeRouting` beats us.
+- **Better prediction did not buy score.** Raising the prompt encoder from 96 to 512 hashing
+  dimensions improved held-out `p̄` log-loss by 0.0897 (3.3x paired SE) and AUC 0.7415 → 0.7810,
+  yet the composite score moved **−0.0013**. This independently reproduces the plateau reported
+  in arXiv:2606.07587. The encoder is now a measured axis (`src/encoder_scan.py`), not a
+  hard-coded default — but the default did not change, because the score did not.
 - A 1-step-lookahead joint routing/cascading baseline (`baselines.CascadeRouting`, in the spirit
   of arXiv:2410.10347) **beats** the index policy in the closest-to-deployment configuration.
   It is therefore a first-class candidate inside `baselines.SelectiveRouter`, not a footnote.
 - All absolute scores come from self-authored synthetic worlds plus one public benchmark. No SKT
   data has been seen.
 
-Full defect log: `docs/reflections/phase1..17.md`. Adversarial self-assessment:
-`docs/external_review.md`.
+Full defect log: `docs/reflections/phase1..21.md` (D1–D69). Adversarial self-assessment:
+`docs/external_review.md`. Prior art, priority disclosure and a comparison against the dominant
+open-source routing library: [`docs/related_work.md`](docs/related_work.md).
+
+Decision latency (the contest's tie-break criterion): **0.24–0.76 ms per step**, 1.12 ms per query
+weighted across tiers — `eval/probe_latency.py`.
 
 ## Repository layout
 
@@ -100,6 +119,7 @@ Full defect log: `docs/reflections/phase1..17.md`. Adversarial self-assessment:
 | `src/engine/` | reservation values (`prize.py`), Weitzman engine (`pandora.py`), pacing |
 | `src/irt/` | 2PL / Beta / graded (Samejima) response models, marginal-ML fits |
 | `src/encoder.py` | amortized IRT encoder + discriminative baseline predictor |
+| `src/encoder_scan.py` | encoder selection layer — the predictor axis is chosen by data too |
 | `src/verifier.py` | output-text quality scorer (structural, agreement, textual features) |
 | `src/cost_model.py` | pre-call cost estimation (decode length is unknown before calling) |
 | `src/cluster.py` | unsupervised prompt clustering → pseudo-domains (no task labels at runtime) |

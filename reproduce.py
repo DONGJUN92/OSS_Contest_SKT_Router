@@ -57,6 +57,23 @@ CORE = [
      "probe_budget_sweep.json — **SUBMISSION §2.7 예산 수준 강건성**", False),
     ("gate", ["eval/probe_gate.py", "--skip-bench"],
      "probe_gate.json — **배포 게이트** 분기 A (Phase 18). 분기 B 는 이전 값 보존, --bench 로 재계산", False),
+    # ◆ Phase 21 — D47 의 규칙("표를 만드는 스크립트는 전부 여기 있어야 한다")을 신규 표에도
+    # 적용한다. 세 단계 모두 SUBMISSION 의 특정 표에 대응한다.
+    ("latency", ["eval/probe_latency.py", "--n", "600", "--reps", "3"],
+     "probe_latency.json — **SUBMISSION §9.2 결정 지연** (tie-break 축, Phase 21 신설)", False),
+    ("closure-encoder", ["eval/probe_redteam_closure.py", "--folds", "3",
+                         "--encoder", "hashing:512"],
+     "probe_redteam_closure_enc-hashing512.json — **§2.8 인코더 축 A/B** (Phase 21)", False),
+    ("closure-paired-se", ["eval/probe_redteam_closure.py", "--folds", "3",
+                           "--margin-mode", "paired_se"],
+     "probe_redteam_closure_paired_se.json — **§2.9 채택 규칙 A/B** (Phase 21)", False),
+    ("closure-argmax", ["eval/probe_redteam_closure.py", "--folds", "3",
+                        "--margin-mode", "argmax"],
+     "probe_redteam_closure_argmax.json — **§2.9 채택 규칙 극단 팔** (Phase 21)", False),
+    # ★ 이 단계가 배포 인코더 기본값(hashing:512)의 **유일한 근거**다. 점추정이 D21 절대
+    # 문턱 바로 위(+0.0054 vs 0.0050)라 쌍대 SE 가 없으면 기본값을 바꿀 수 없다.
+    ("encoder-axis", ["eval/probe_encoder_axis.py", "--folds", "3"],
+     "probe_encoder_axis.json — **§2.8 인코더 쌍대 A/B (SE 포함)**, 배포 기본값 근거", False),
     ("figures", ["eval/make_figures.py"], "figures/*.png (결과 JSON만 읽음)", False),
 ]
 BENCH_STEPS = [
