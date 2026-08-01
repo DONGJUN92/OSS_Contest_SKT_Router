@@ -124,7 +124,9 @@ def main(nf=3, n_queries=1200):
     cfg = dict(CFG, synth=dict(CFG["synth"], n_queries=n_queries))
     tw = build_textworld(cfg, seed=42)
     ds, meta = to_dataset(tw, cfg, Ns=(1,))
-    ds.features = get_encoder("hashing").encode(meta["prompts"])
+    _enc = get_encoder("hashing")
+    ds.features = _enc.encode(meta["prompts"])
+    ds.text_encoder = _enc          # D70: 배포 텍스트 경로 계약
     F = augmented_feature_matrix(meta, text_dim=64, use_prompt=True, use_agreement=True)
     cmat = cost_matrix(ds)
     folds = ds.stratified_folds(CFG["eval"]["k_folds"], CFG["seed"])
@@ -222,8 +224,41 @@ def main(nf=3, n_queries=1200):
           f"({(hi - o3) / rem * 100:5.1f}%)")
     print(f"     [참조] 실현정오 p̄ (달성 불가)     : {o1 - cur:+.4f}  "
           f"({(o1 - cur) / rem * 100:5.1f}%)  ← 초판이 예측 여지로 오독한 값")
+    # ★★ D67 (외부 레드팀 2026-08-01) — **가중 잔여 여지의 tier별 분해.**
+    #
+    # 지적: 이 저장소는 여지를 *축별*(예측기·검증기·결정구조)로만 쪼갰고 **tier별로는
+    # 한 번도 쪼개지 않았다.** 그런데 tier 가중이 0.5/0.3/0.2 이므로 "어디에 투자할 것인가"는
+    # 축이 아니라 tier 가 먼저 결정한다. 쪼개 보면 결론이 뒤집힌다:
+    #
+    #   fast 는 가중치가 절반인데 **가중 잔여 여지는 8% 뿐**이다. 이유는 §2.6 이 이미
+    #   보고한 것과 같다 — 빠듯한 예산에서는 "항상 최저가"(하한)와 "참 확률+완벽 채점"
+    #   (달성 가능 상한) 사이의 폭 자체가 좁다. 나머지는 알레아토릭이다.
+    #
+    # 함의: §2.5·§2.6 이 fast tier 퇴화에 쏟은 노력은 **여지 8% 구간에 대한 투자**였다.
+    # 그 절들은 "완화해도 점수가 안 오른다"까지는 스스로 측정했지만, **"그러므로
+    # balanced·premium 으로 옮긴다"** 는 다음 문장을 쓰지 않았다. 이 표가 그 문장이다.
+    tier_gap = {t: (res[arms[4]][t] - res[arms[0]][t]) * W[t] for t in TIERS}
+    tot_gap = sum(tier_gap.values())
+    print(f"\n  ── ★ 가중 잔여 여지의 tier 분해 (합 {tot_gap:+.4f}) ──")
+    for t in TIERS:
+        band = (res[arms[4]][t] - res[arms[7]][t]) * W[t]   # 하한→달성상한 가중 폭
+        print(f"   {t:<9} 가중 {W[t]:.1f}  현행 {res[arms[0]][t]:.4f} → 상한 "
+              f"{res[arms[4]][t]:.4f}  가중여지 {tier_gap[t]:+.4f} "
+              f"({tier_gap[t] / max(tot_gap, 1e-9) * 100:5.1f}%)  "
+              f"[가중 달성폭 전체 {band:.4f}]")
+
     out = {"per_tier": {a: {t: round(res[a][t], 4) for t in TIERS} for a in arms},
            "composite": {a: round(comp[a], 4) for a in arms},
+           "weighted_headroom_by_tier": {
+               t: {"weight": W[t],
+                   "current": round(res[arms[0]][t], 4),
+                   "achievable_ceiling": round(res[arms[4]][t], 4),
+                   "weighted_headroom": round(tier_gap[t], 4),
+                   "share_of_total_headroom_pct": round(
+                       tier_gap[t] / max(tot_gap, 1e-9) * 100, 1),
+                   "weighted_total_band_over_floor": round(
+                       (res[arms[4]][t] - res[arms[7]][t]) * W[t], 4)}
+               for t in TIERS},
            "span_nominal": round(span, 4), "remaining_nominal": round(rem, 4),
            "achievable_ceiling": round(oB, 4),
            "achievable_span": round(ach_span, 4),

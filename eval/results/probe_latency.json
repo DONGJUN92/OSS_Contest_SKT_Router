@@ -1,0 +1,31 @@
+{
+ "fast": {
+  "step_ms_mean": 0.2414,
+  "step_ms_p50": 0.2178,
+  "step_ms_p99": 0.8135,
+  "query_ms_mean": 0.4868,
+  "query_ms_p99": 1.5714,
+  "steps_per_query": 2.016,
+  "offline_fit_s": 3.02
+ },
+ "balanced": {
+  "step_ms_mean": 0.5212,
+  "step_ms_p50": 0.4002,
+  "step_ms_p99": 1.7612,
+  "query_ms_mean": 1.3713,
+  "query_ms_p99": 3.9252,
+  "steps_per_query": 2.631,
+  "offline_fit_s": 4.74
+ },
+ "premium": {
+  "step_ms_mean": 0.7638,
+  "step_ms_p50": 0.6334,
+  "step_ms_p99": 2.0574,
+  "query_ms_mean": 2.3229,
+  "query_ms_p99": 5.1401,
+  "steps_per_query": 3.041,
+  "offline_fit_s": 5.62
+ },
+ "weighted_query_ms": 1.1194,
+ "note": "라우터의 **결정** 시간만 잰다 (모델 호출·채점 시간 제외 — 호스트 몫). 오프라인 적합은 채점 중에 발생하지 않으므로 분리해 보고한다. 순차 개봉은 스텝이 많아 문항당 지연이 단일호출보다 크다 — 그 대가를 그대로 싣는다. 측정 환경 의존이므로 절대값이 아니라 규모(µs~ms)로 읽을 것."
+}

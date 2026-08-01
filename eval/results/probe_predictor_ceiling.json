@@ -51,6 +51,32 @@
   "④ 예산제약 오라클": 0.6365,
   "하한 always-cheapest": 0.3499
  },
+ "weighted_headroom_by_tier": {
+  "fast": {
+   "weight": 0.5,
+   "current": 0.3582,
+   "achievable_ceiling": 0.3693,
+   "weighted_headroom": 0.0055,
+   "share_of_total_headroom_pct": 8.0,
+   "weighted_total_band_over_floor": 0.0097
+  },
+  "balanced": {
+   "weight": 0.3,
+   "current": 0.5823,
+   "achievable_ceiling": 0.6916,
+   "weighted_headroom": 0.0328,
+   "share_of_total_headroom_pct": 47.1,
+   "weighted_total_band_over_floor": 0.1025
+  },
+  "premium": {
+   "weight": 0.2,
+   "current": 0.7427,
+   "achievable_ceiling": 0.899,
+   "weighted_headroom": 0.0313,
+   "share_of_total_headroom_pct": 44.9,
+   "weighted_total_band_over_floor": 0.1098
+  }
+ },
  "span_nominal": 0.2866,
  "remaining_nominal": 0.1342,
  "achievable_ceiling": 0.5719,
