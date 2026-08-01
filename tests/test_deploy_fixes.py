@@ -268,3 +268,137 @@ def test_gate_returns_the_fitted_scoring_verifier_when_text_is_available():
     auc, V, sv = measure_verifier(ds, None, np.arange(60, 200))
     assert V is None and sv is None                  # meta 가 없으면 만들 것이 없다
     assert isinstance(auc, float)
+
+
+# ═════════════ D63: 비용 규약 (단가 정책) + 문항별 호출 상한 ═════════════
+#
+# 외부 레드팀(2026-08-01)이 재현한 결함: 대회 상세는 런타임 제공 항목을 "모델 프로파일 +
+# 공식 **비용 정책**" 이라 적는데, 어댑터는 후보별 **숫자 비용**만 받아 `KeyError: 'cost'`
+# 로 첫 스텝에서 죽었다. 그리고 "남은 호출 수"도 명시 항목인데 받을 자리가 없었다.
+# D36/D43 과 같은 자리다 — 오프라인 리플레이는 `cost_mirror` 로 비용을 직접 만들어 쓰므로
+# 이 경로를 원리적으로 밟지 않는다.
+
+def _price_meta(ds, out_tokens=None):
+    """호스트가 '토큰당 단가'로 주는 형태 (config.yaml 의 가격 필드와 같은 이름)."""
+    out = {}
+    for k, mid in enumerate(ds.model_ids):
+        e = {"prefill_price": ds.models[mid].prefill_price,
+             "decode_price": ds.models[mid].decode_price}
+        if out_tokens is not None:
+            e["avg_out_tokens"] = float(out_tokens[k])
+        out[mid] = e
+    return out
+
+
+def test_price_policy_metadata_produces_the_cost_mirror_formula():
+    """단가 + 토큰 수 → `cost_mirror.call_cost` 와 **정확히 같은 값**이어야 한다."""
+    from src.submission import SubmissionRouter
+    from src.cost_mirror import cost_matrix
+    ds, tr, r = _fit_router()
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.5)
+    i = 0
+    meta = _price_meta(ds, out_tokens=ds.out_tokens[i])
+    with pytest.warns(RuntimeWarning, match="척도 불일치"):   # 오라클 λ + 단가 경로 → 경고가 정상
+        got = sub._cost_vector("아무 프롬프트", meta, ds.features[i],
+                               prompt_tokens=float(ds.in_tokens[i]))
+    assert np.allclose(got, cost_matrix(ds)[i]), (
+        f"단가 경로가 채점 산식과 어긋난다: {got} vs {cost_matrix(ds)[i]}")
+    assert sub.cost_path == "price_policy", "단가 경로가 발동했음을 증명해야 한다 (D32)"
+
+
+def test_price_policy_end_to_end_step_does_not_crash():
+    """★ 감사 재현 케이스 — 이전에는 여기서 `KeyError: 'cost'` 였다."""
+    from src.submission import SubmissionRouter
+    from src.text_encoder import get_encoder
+    from src.router import LPBRouter
+    enc = get_encoder("hashing")
+    ds = _tiny_dataset(n=360, seed=5)
+    ds.features = enc.encode([f"질문 {i}" for i in range(ds.n)])
+    ds.text_encoder = enc
+    r = LPBRouter(MIN_CFG, 1, seed=0, use_domain=False,
+                  cost_mode="ridge").fit(ds, np.arange(120, ds.n), "fast")
+    assert r.cost_est is not None
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.5)
+    assert sub.decode_estimator is not None, "라우터의 길이 추정기를 물려받아야 한다"
+    act = sub.step("한국어 프롬프트입니다", "fast", [], _price_meta(ds), 1e6)
+    assert act.kind == "call" and act.model_id in ds.model_ids
+
+
+def test_unreadable_cost_metadata_fails_loudly_with_the_keys_it_saw():
+    """임의 대체 대신 **무엇을 하라**를 말해야 한다 (비용은 정책 전체를 바꾼다)."""
+    from src.submission import SubmissionRouter
+    ds, tr, r = _fit_router()
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.5)
+    bad = {mid: {"토큰당요금": 0.1} for mid in ds.model_ids}
+    with pytest.raises(KeyError, match="비용 메타데이터를 해석할 수 없습니다"):
+        sub._cost_vector("p", bad, ds.features[0])
+
+
+def test_custom_cost_spec_absorbs_foreign_key_names_and_units():
+    """호스트 규약이 달라도 `CostSpec` 교체만으로 흡수된다 (파일 수정 없이)."""
+    from src.submission import SubmissionRouter, CostSpec
+    from src.cost_mirror import cost_matrix
+    ds, tr, r = _fit_router()
+    spec = CostSpec(prefill_keys=("in_usd_per_mtok",), decode_keys=("out_usd_per_mtok",),
+                    price_unit=1e6)
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.5,
+                           cost_spec=spec)
+    i = 0
+    meta = {mid: {"in_usd_per_mtok": ds.models[mid].prefill_price * 1000.0,
+                  "out_usd_per_mtok": ds.models[mid].decode_price * 1000.0,
+                  "avg_out_tokens": float(ds.out_tokens[i, k])}
+            for k, mid in enumerate(ds.model_ids)}
+    with pytest.warns(RuntimeWarning, match="척도 불일치"):   # 위와 같은 이유 (기본 라우터 = oracle)
+        got = sub._cost_vector("p", meta, ds.features[i],
+                               prompt_tokens=float(ds.in_tokens[i]))
+    assert np.allclose(got, cost_matrix(ds)[i])
+
+
+def test_decode_length_unknown_fails_instead_of_guessing():
+    """길이를 모르면 상수로 때우지 않고 세 가지 해법을 말하며 실패한다."""
+    from src.submission import SubmissionRouter
+    ds, tr, r = _fit_router()                       # cost_mode 기본값 = oracle → 추정기 없음
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.5)
+    assert sub.decode_estimator is None
+    with pytest.raises(KeyError, match="디코드 길이를 알 수 없어"):
+        sub._cost_vector("p", _price_meta(ds), ds.features[0])
+
+
+def test_oracle_lambda_with_estimated_costs_warns_about_scale_mismatch():
+    """조용히 다른 정책이 되는 대신 경고한다 (λ 는 오라클 비용으로 튜닝됐다)."""
+    from src.submission import SubmissionRouter
+    ds, tr, r = _fit_router()
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.5)
+    meta = _price_meta(ds, out_tokens=ds.out_tokens[0])
+    with pytest.warns(RuntimeWarning, match="척도 불일치"):
+        sub._cost_vector("p", meta, ds.features[0])
+
+
+def test_remaining_calls_from_the_host_caps_this_query():
+    """★ 대회 상세의 '남은 호출 수' — 생성자 인자가 아니라 **문항마다** 온다."""
+    from src.submission import SubmissionRouter
+    from src.cost_mirror import cost_matrix
+    ds, tr, r = _fit_router()
+    cmat = cost_matrix(ds)
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.9)
+    sub.begin_tier("fast", budget=1e6, n_queries=1)
+    hist, calls = [], 0
+    for _ in range(6):
+        act = sub.step(ds.features[0], "fast", hist, cmat[0], 1e6,
+                       remaining_calls=1 - calls)
+        if act.kind != "call":
+            break
+        calls += 1
+        hist.append({"model_id": act.model_id, "output": "x"})
+    assert calls == 1, f"호스트 상한 1 을 넘겼다 (호출 {calls}회)"
+    assert act.kind == "answer" and act.model_id in [h["model_id"] for h in hist]
+
+
+def test_zero_remaining_calls_abstains_instead_of_forcing_a_call():
+    """상한 0 이면 최저가 강제 호출 경로도 막혀야 한다 (상한은 예산과 달리 협상 불가)."""
+    from src.submission import SubmissionRouter
+    from src.cost_mirror import cost_matrix
+    ds, tr, r = _fit_router()
+    sub = SubmissionRouter({"fast": r}, ds.model_ids, observe=lambda p, mid, rec: 0.9)
+    act = sub.step(ds.features[0], "fast", [], cost_matrix(ds)[0], 1e6, remaining_calls=0)
+    assert act.kind == "abstain"

@@ -15,14 +15,82 @@
 
 주최측 실제 API 확인 시 교체 지점 (전부 이 파일 안):
   ① `Action` 의 표현 — ("call", id) / ("answer", id) 를 주최측 열거형으로
-  ② `_cost_vector` — 후보별 비용을 메타데이터에서 읽는 방식 (Q3)
+  ② `CostSpec`     — 비용 메타데이터의 키 이름·단가 단위 (Q3). `_cost_vector` 는 무수정
   ③ `_observe`     — 호출된 출력에서 검증기 점수를 얻는 방식
   ④ `begin_tier` / `end_query` 훅의 호출 시점 (예산·페이싱 상태 갱신)
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import inspect
+import unicodedata
+import warnings
 
 import numpy as np
+
+
+# ─────────────────────── 비용 규약 (D63) ───────────────────────
+
+@dataclass(frozen=True)
+class CostSpec:
+    """호스트가 **비용을 어떤 형태로 주는가** 의 명세 — 수령 당일 여기만 맞춘다.
+
+    ★ D63 (외부 레드팀 2026-08-01): 초판 `_cost_vector` 는 후보별 **숫자 비용**만 받았다.
+    그런데 대회 상세가 명시한 런타임 제공 항목은
+
+        호출 **전**: 프롬프트 · 모델 프로파일 + 공식 **비용 정책**(단가) · 남은 예산·호출 수
+        호출 **후**: 반환 출력 · 실제 토큰 수 · **실제 비용**
+
+    이다. 즉 **이번 문항의 비용은 호출 전에 주어지지 않을 수 있고**, 주어지는 것은 단가다.
+    decode 길이는 호출해 봐야 알기 때문에 이것은 규약 문제가 아니라 **정보 구조**의 문제다.
+    저장소는 이 사실을 `src/cost_model.py` 로 이미 인정하고 추정기를 만들어 두었는데
+    (SUBMISSION §2 는 "실배포 권장 구성 `cost_mode='ridge', cost_margin=0.05`" 라고 적는다)
+    그 추정기가 **배포 경로에는 한 줄도 연결돼 있지 않았다.** 감사 재현: 단가 메타데이터를
+    주면 `KeyError: 'cost'` 로 첫 스텝에서 죽는다.
+
+    D36(text_encoder 미대입)·D43(생존 모드 미발동)과 **같은 자리**의 결함이다 —
+    오프라인 리플레이는 `cost_mirror.cost_matrix` 로 비용을 직접 만들어 쓰므로 이 경로를
+    영원히 밟지 않는다.
+
+    지원 형태 3종 (자동 판별)
+      ① 벡터/스칼라 dict  : 문항별 비용이 이미 계산돼 온다        → 그대로 사용
+      ② `{id: {"cost": …}}`: 같음 (키 이름은 `cost_keys` 로 흡수)
+      ③ `{id: {단가…}}`    : **단가 정책** → 프리필은 프롬프트 길이로, 디코드는
+                             `DecodeLengthEstimator` 추정 길이로 비용을 조립한다
+
+    ③ 의 산식은 `cost_mirror.call_cost` 와 **정확히 같은 형태**여야 한다:
+        cost_m = prefill_price·n_in/unit + decode_price·n_out_hat_m/unit
+    """
+    cost_keys: tuple = ("cost", "call_cost", "expected_cost", "price")
+    prefill_keys: tuple = ("prefill_price", "input_price", "prompt_price", "price_in",
+                           "input_token_price", "prompt_token_price")
+    decode_keys: tuple = ("decode_price", "output_price", "completion_price", "price_out",
+                          "output_token_price", "completion_token_price")
+    out_tokens_keys: tuple = ("avg_out_tokens", "expected_out_tokens", "mean_out_tokens",
+                              "avg_output_tokens", "max_tokens")
+    in_tokens_keys: tuple = ("in_tokens", "prompt_tokens", "input_tokens", "n_prompt_tokens")
+    #: 단가의 분모 토큰 수. `cost_mirror` 와 `config.yaml` 은 1K 토큰당 가격을 쓴다.
+    #: 호스트가 1M 토큰당 가격을 주면 여기만 1e6 으로 바꾼다.
+    price_unit: float = 1000.0
+
+    def pick(self, entry: dict, keys) -> float | None:
+        for k in keys:
+            if k in entry:
+                return float(entry[k])
+        return None
+
+
+def default_token_counter(text: str) -> float:
+    """프롬프트 → 대략적 토큰 수 (호스트가 `prompt_tokens` 를 주지 않을 때만 쓰는 폴백).
+
+    **휴리스틱임을 숨기지 않는다.** 현대 BPE 기준 대략 라틴 문자 4자/토큰, 한글·CJK
+    1.5자/토큰이다. 정확한 토크나이저를 쓸 수 있으면 `token_counter=` 로 주입하라 —
+    프리필 비용은 이 값에 **선형**이므로, 모델 간 상대 순서에는 영향이 없지만
+    (모든 후보가 같은 n_in 을 쓴다) 절대 예산 가능성 판정에는 영향이 있다.
+    """
+    if not isinstance(text, str):
+        text = str(text)
+    cjk = sum(1 for ch in text
+              if unicodedata.category(ch) == "Lo" or "가" <= ch <= "힣")
+    return max(1.0, cjk / 1.5 + (len(text) - cjk) / 4.0)
 
 
 @dataclass(frozen=True)
@@ -66,7 +134,9 @@ class SubmissionRouter:
 
     def __init__(self, routers: dict, model_ids: list[str], observe,
                  domain_of=None, max_calls: int | None = None,
-                 remaining_is_net: bool = False, cost_margin: float | None = None):
+                 remaining_is_net: bool = False, cost_margin: float | None = None,
+                 cost_spec: CostSpec | None = None, decode_estimator=None,
+                 token_counter=None):
         self.routers = routers
         self.model_ids = list(model_ids)
         self.index = {m: i for i, m in enumerate(self.model_ids)}
@@ -74,6 +144,21 @@ class SubmissionRouter:
         self.max_calls = max_calls          # 호출 수 상한 (하네스 Session.max_calls와 동일 의미론)
         self.policies = {t: r.policy() for t, r in routers.items()}
         self._encoded: dict[str, np.ndarray] = {}
+        # ── D63: 비용 규약 + 사전 디코드 길이 추정기 ──
+        # 추정기는 명시 인자 > 라우터가 적합 때 만든 것(`cost_mode != "oracle"`) 순으로 물려받는다.
+        # **열 순서 계약**: 추정기는 `ds.out_tokens` 로 적합됐으므로 그 열 순서가 곧
+        # `model_ids` 순서다 — 이 클래스 전체가 이미 그 가정 위에 서 있다(`self.index`).
+        self.cost_spec = cost_spec or CostSpec()
+        self.token_counter = token_counter or default_token_counter
+        if decode_estimator is None:
+            for r in routers.values():
+                decode_estimator = getattr(r, "cost_est", None)
+                if decode_estimator is not None:
+                    break
+        self.decode_estimator = decode_estimator
+        #: 단가 경로가 실제로 발동했는지 (D32 규칙: 기구의 발동을 증명 가능하게 남긴다)
+        self.cost_path = None
+        self._warned_oracle = False
         # ── D37: `remaining_budget` 의 의미론 (주최측 규약 미확인 → 명시 스위치) ──
         # False (기본): 호스트가 **이번 문항 시작 시점의** 잔여 예산을 준다 → 이번 문항에서
         #               이미 쓴 금액을 우리가 빼야 한다.
@@ -100,6 +185,7 @@ class SubmissionRouter:
         self._refused: set[int] = set()
         self._last_req: tuple | None = None
         self._prev_hist_len: int = -1       # -1 = 아직 어떤 문항도 시작되지 않음
+        self._calls_left: int | None = None  # D63: 호스트가 준 문항별 잔여 호출 수
         # ── Phase 17: 어댑터를 **정책 종류에 무관**하게 만든다 (레드팀 MAJOR) ──
         # 이전 버전은 `r.irt["b"]` 와 `policy().inner` 를 무조건 요구했다. 그래서
         #   · `baselines.SelectiveRouter` (Phase 15가 "한계 극복"이라 발표한 정책)
@@ -174,17 +260,24 @@ class SubmissionRouter:
     # ---------------- 핵심: 한 스텝 ----------------
 
     def step(self, prompt, tier: str, call_history: list, model_metadata,
-             remaining_budget: float, domain=None) -> Action:
+             remaining_budget: float, domain=None, remaining_calls: int | None = None,
+             prompt_tokens: float | None = None) -> Action:
         """이력을 보고 다음 액션 하나를 결정한다 (내부 route()와 등가).
 
         call_history: [{"model_id": str, "output": ...}, ...]  호출 순서대로
-        model_metadata: 후보별 비용 정보 (형식은 `_cost_vector` 참조)
+        model_metadata: 후보별 비용 정보 또는 **단가 정책** (형식은 `CostSpec` 참조)
         domain: 문항의 도메인/태스크 (챌린지 공개 데이터가 제공). 생략 시 domain_of 사용
+        remaining_calls: ★ D63 — 이 문항에서 **앞으로 허용되는** 호출 수 (net). 대회 상세가
+            런타임 제공 항목으로 "남은 호출 수"를 명시하는데, 초판은 생성자 인자 `max_calls`
+            뿐이라 호스트가 문항마다 주는 값을 받을 자리가 없었다. 두 상한은 함께 적용된다.
+        prompt_tokens: 호스트가 프리필 토큰 수를 알려 주면 여기로 — 단가 경로에서
+            휴리스틱 카운터 대신 쓴다 (`default_token_counter` 의 오차를 제거).
         """
         pol = self.policies[tier]
         feats = self._features(prompt, tier)
         dom = int(self.domain_of(prompt, model_metadata) if domain is None else domain)
-        costs = self._cost_vector(prompt, model_metadata)
+        costs = self._cost_vector(prompt, model_metadata, feats, prompt_tokens)
+        self._calls_left = None if remaining_calls is None else int(remaining_calls)
         self._begin_query_if_new(pol, tier, call_history, costs)
         if self._kind[tier] == "single":
             return self._step_single(pol, tier, feats, dom, costs, call_history,
@@ -283,15 +376,23 @@ class SubmissionRouter:
         return float(costs[m]) * (1.0 + self.cost_margin)
 
     def _left(self, obs: dict, costs, remaining_budget: float) -> float:
-        """이번 문항에서 아직 쓸 수 있는 금액 (D37: 잔여예산 의미론 스위치)."""
+        """이번 문항에서 아직 쓸 수 있는 금액 (D37: 잔여예산 의미론 스위치).
+
+        ⚠ D63 주의: `remaining_is_net=False` 는 **우리 비용 추정치**를 빼서 잔여를 만든다.
+        단가 경로(`cost_path == "price_policy"`)에서는 그 추정치가 실제 과금과 다르므로
+        문항 안에서 오차가 누적된다. 호스트가 **실제 지출을 반영한** 잔여를 주는 규약이라면
+        `remaining_is_net=True` 가 명백히 안전하다 — 단가 경로에서는 그쪽을 권장한다.
+        """
         if self.remaining_is_net:
             return float(remaining_budget)
         return float(remaining_budget) - sum(float(costs[m]) for m in obs)
 
     def _afford(self, obs: dict, costs, remaining_budget: float) -> list[int]:
-        """개봉 가능한 미개봉 상자 — 예산·호출상한·거절이력을 모두 반영."""
+        """개봉 가능한 미개봉 상자 — 예산·호출상한(정적/문항별)·거절이력을 모두 반영."""
         if self.max_calls is not None and len(obs) >= self.max_calls:
             return []
+        if getattr(self, "_calls_left", None) is not None and self._calls_left <= 0:
+            return []                                # D63: 호스트가 준 문항별 잔여 호출 수
         left = self._left(obs, costs, remaining_budget)
         return [m for m in range(len(self.model_ids))
                 if m not in obs and m not in self._refused
@@ -303,7 +404,14 @@ class SubmissionRouter:
         return Action("call", self.model_ids[m_star])
 
     def _cheapest_fallback(self, tier, call_history, costs, remaining_budget):
-        """최저가 1회 강제 시도 (route() 의 강제 최소 응답). 불가하면 None."""
+        """최저가 1회 강제 시도 (route() 의 강제 최소 응답). 불가하면 None.
+
+        D63: 호출 상한이 0 이면 이 강제 경로도 막힌다 — 상한은 예산과 달리 **협상 불가**다.
+        """
+        if getattr(self, "_calls_left", None) is not None and self._calls_left <= 0:
+            return None
+        if self.max_calls is not None and self.max_calls <= 0:
+            return None
         order = sorted((m for m in range(len(self.model_ids)) if m not in self._refused),
                        key=lambda m: float(costs[m]))
         for m in order:
@@ -378,6 +486,8 @@ class SubmissionRouter:
         """
         if call_history:                                   # 이미 호출했다 → 그 답이 최종
             return Action("answer", call_history[0]["model_id"])
+        if getattr(self, "_calls_left", None) is not None and self._calls_left <= 0:
+            return Action("abstain", "")                   # D63: 호출 상한 소진
         pbar = np.asarray(pol.pred.predict_row(feats, dom), dtype=float)
         for m in np.argsort(-(pbar - float(pol.lam) * costs)):
             m = int(m)
@@ -411,18 +521,122 @@ class SubmissionRouter:
             self._encoded[key] = np.asarray(enc.encode([prompt])[0])
         return self._encoded[key]
 
-    def _cost_vector(self, prompt, model_metadata) -> np.ndarray:
-        """후보별 이번 문항 호출 비용 (Q3 확정 시 여기만 교체).
+    def _cost_vector(self, prompt, model_metadata, feats=None,
+                     prompt_tokens: float | None = None) -> np.ndarray:
+        """후보별 이번 문항 호출 비용. 규약은 `CostSpec` 이 흡수한다 (D63).
 
         지원 형식
-          · np.ndarray / list      : 모델 순서대로의 비용 벡터 (사전 계산 결과)
-          · {model_id: float}      : 모델별 비용
-          · {model_id: {"cost":…}} : 메타데이터 딕셔너리
+          · np.ndarray / list        : 모델 순서대로의 비용 벡터 (사전 계산 결과)
+          · {model_id: float}        : 모델별 비용
+          · {model_id: {"cost": …}}  : 비용이 든 메타데이터 (키 이름은 `cost_keys`)
+          · {model_id: {단가 …}}      : **비용 정책** → 프리필(프롬프트 길이) + 디코드(추정)
+
+        네 번째 형태를 못 만들면 **임의 대체 없이 실패**한다 — 비용을 틀리면 예약값
+        σ = 1 − λc/p̄ 가 통째로 달라져 조용히 다른 정책이 되기 때문이다 (D18 과 같은 철학).
         """
         if isinstance(model_metadata, (list, tuple, np.ndarray)):
+            self.cost_path = "vector"
             return np.asarray(model_metadata, dtype=float)
-        out = np.empty(len(self.model_ids), dtype=float)
-        for i, mid in enumerate(self.model_ids):
-            v = model_metadata[mid]
-            out[i] = float(v if np.isscalar(v) else v["cost"])
-        return out
+
+        spec, M = self.cost_spec, len(self.model_ids)
+        entries = []
+        for mid in self.model_ids:
+            try:
+                entries.append(model_metadata[mid])
+            except (KeyError, TypeError):
+                raise KeyError(
+                    f"후보 모델 {mid!r} 의 비용 메타데이터가 없습니다 "
+                    f"(라우터 적합 모델 목록 {self.model_ids}). 호스트 후보 풀이 바뀌었다면 "
+                    f"라우터를 재적합해야 합니다") from None
+
+        # ① 스칼라 / ② 비용 키
+        out = np.empty(M, dtype=float)
+        direct = True
+        for i, v in enumerate(entries):
+            if np.isscalar(v):
+                out[i] = float(v)
+                continue
+            c = spec.pick(v, spec.cost_keys) if isinstance(v, dict) else None
+            if c is None:
+                direct = False
+                break
+            out[i] = c
+        if direct:
+            self.cost_path = "direct"
+            return out
+
+        # ③ 단가 정책 → 사전 비용 조립
+        pre = [spec.pick(e, spec.prefill_keys) if isinstance(e, dict) else None
+               for e in entries]
+        dec = [spec.pick(e, spec.decode_keys) if isinstance(e, dict) else None
+               for e in entries]
+        if any(p is None for p in pre) or any(d is None for d in dec):
+            seen = sorted({k for e in entries if isinstance(e, dict) for k in e})
+            raise KeyError(
+                "비용 메타데이터를 해석할 수 없습니다. 다음 중 하나를 만족해야 합니다 — "
+                f"① 비용 키 {spec.cost_keys} ② 단가 키 프리필 {spec.prefill_keys} + "
+                f"디코드 {spec.decode_keys}. 실제로 본 키: {seen}. "
+                "호스트 규약이 다르면 `SubmissionRouter(..., cost_spec=CostSpec(...))` 로 "
+                "키 이름과 `price_unit` 을 맞추십시오 (이 파일 상단 교체 지점 ②)")
+
+        n_in = self._prompt_tokens(prompt, entries, prompt_tokens)
+        n_out = self._decode_lengths(entries, feats)
+        self.cost_path = "price_policy"
+        self._warn_if_cost_scale_mismatch()
+        return (np.asarray(pre, dtype=float) * n_in / spec.price_unit
+                + np.asarray(dec, dtype=float) * n_out / spec.price_unit)
+
+    def _prompt_tokens(self, prompt, entries, explicit) -> float:
+        """프리필 토큰 수 — 명시값 > 메타데이터 > 휴리스틱 카운터."""
+        if explicit is not None:
+            return float(explicit)
+        spec = self.cost_spec
+        for e in entries:
+            if isinstance(e, dict):
+                v = spec.pick(e, spec.in_tokens_keys)
+                if v is not None:
+                    return float(v)
+        return float(self.token_counter(prompt))
+
+    def _decode_lengths(self, entries, feats) -> np.ndarray:
+        """모델별 예상 디코드 길이 — 적합된 추정기 > 메타데이터 평균 > 학습 평균.
+
+        추정기가 있으면 그것이 정답이다: `LPBRouter(cost_mode="ridge")` 로 적합하면
+        λ 도 같은 척도의 추정 비용으로 튜닝되므로 배포와 오프라인이 일치한다.
+        """
+        spec, M = self.cost_spec, len(self.model_ids)
+        est = self.decode_estimator
+        if est is not None and feats is not None:
+            try:
+                return np.asarray(est.predict(np.asarray(feats)[None, :])[0], dtype=float)
+            except Exception:                        # 특성 차원 불일치 등 → 아래로 폴백
+                pass
+        meta_out = [spec.pick(e, spec.out_tokens_keys) if isinstance(e, dict) else None
+                    for e in entries]
+        if all(v is not None for v in meta_out):
+            return np.asarray(meta_out, dtype=float)
+        if est is not None and getattr(est, "mean_", None) is not None \
+                and len(est.mean_) == M:
+            return np.asarray(est.mean_, dtype=float)
+        raise KeyError(
+            "디코드 길이를 알 수 없어 단가에서 비용을 만들 수 없습니다. 셋 중 하나를 "
+            f"하십시오 — ① 메타데이터에 {spec.out_tokens_keys} 중 하나를 넣기 "
+            "② `LPBRouter(cost_mode='ridge'|'mean')` 로 적합해 추정기를 싣기 "
+            "③ `SubmissionRouter(..., decode_estimator=…)` 로 직접 주입. "
+            "임의의 상수로 대체하지 않는 이유는 비용이 예약값 전체를 재조정하기 때문입니다")
+
+    def _warn_if_cost_scale_mismatch(self) -> None:
+        """λ 가 오라클 비용으로 튜닝됐는데 배포는 추정 비용을 쓰는 상황을 알린다.
+
+        조용히 지나가면 σ = 1 − λc/p̄ 의 c 만 척도가 바뀌어 정책이 미묘하게 달라진다.
+        """
+        if self._warned_oracle:
+            return
+        self._warned_oracle = True
+        modes = {getattr(r, "cost_mode", "oracle") for r in self.routers.values()}
+        if modes <= {"oracle"}:
+            warnings.warn(
+                "라우터는 오라클 비용으로 λ 를 튜닝했는데 배포 경로는 단가에서 비용을 "
+                "추정합니다 (척도 불일치). `LPBRouter(cost_mode='ridge', cost_margin=0.05)` "
+                "로 적합하면 두 경로가 같은 척도를 씁니다 — SUBMISSION §2 의 실배포 권장 구성입니다.",
+                RuntimeWarning, stacklevel=3)
