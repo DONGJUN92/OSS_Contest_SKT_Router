@@ -144,11 +144,49 @@ def _candidates(ds, cfg, idx, tier, seed, lpb_kwargs):
     }, lpb
 
 
+def _null_progress(stage: str, info: dict) -> None:                # pragma: no cover
+    pass
+
+
+def make_stderr_progress(total_units: int):
+    """진행 표시기 — 수령 당일 운영자가 **끝날지 여부를 알 수 있게** 한다 (D64).
+
+    ★ D64 (외부 레드팀 2026-08-01): "수령 당일 첫 명령"인 `python -m src.gate` 를
+    1,800쿼리(9,000행) 데이터에 돌렸더니 **900초가 지나도록 표준출력 한 줄이 없었고
+    부분 아티팩트도 없었다.** 구조상 당연하다 — tier × 반복 × fold × 후보 = 수십~수백 회
+    라우터 적합인데 `print_decision` 전까지 아무것도 찍지 않고 `out_path` 는 맨 끝에
+    한 번만 쓴다. 즉 중간에 끊기면 **전부 잃는다.** 출품 마감(8/27)과 데이터 수령 시점을
+    생각하면 이것은 편의가 아니라 리스크 항목이다.
+    """
+    import sys
+    import time
+    t0 = time.time()
+    state = {"done": 0}
+
+    def progress(stage: str, info: dict) -> None:
+        if stage == "fold":
+            state["done"] += 1
+            el = time.time() - t0
+            eta = el / max(state["done"], 1) * max(total_units - state["done"], 0)
+            sys.stderr.write(
+                f"\r  [{state['done']:>3}/{total_units}] {info.get('tier', ''):<9} "
+                f"rep {info.get('rep', 0) + 1} fold {info.get('fold', 0) + 1}  "
+                f"경과 {el:6.0f}s  잔여 ~{eta:6.0f}s   ")
+            sys.stderr.flush()
+        elif stage == "tier_done":
+            sys.stderr.write(f"\n  ✓ {info['tier']} → {info['pick']}\n")
+            sys.stderr.flush()
+        elif stage == "verifier":
+            sys.stderr.write(f"  예측층 검증기 AUC = {info['auc']}\n")
+            sys.stderr.flush()
+    return progress
+
+
 def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
              threshold: float = BREAK_EVEN_AUC, margin: float = SELECT_MARGIN,
              out_path=None, lpb_kwargs=None, apply_verifier: bool = True,
              se_k: float = SE_K, n_splits: int = N_SPLITS,
-             n_repeats: int = N_REPEATS):
+             n_repeats: int = N_REPEATS, progress=None):
     """게이트 실행 → (GateDecision, {tier: 배포 라우터}).
 
     apply_verifier=True 이고 meta 가 있으면, 측정 과정에서 적합한 검증기 행렬을 `ds.verifier`
@@ -166,6 +204,7 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
     from baselines.policies import SelectiveRouter
     tiers = list(tiers or cfg["tiers"].keys())
     lpb_kwargs = dict(lpb_kwargs or {})
+    progress = progress or _null_progress
     # ★ D44: 배포 가능한 라우터만 만든다. 초판은 `use_domain` 기본값(True)으로 다집단 2PL 을
     # 적합했는데, 챌린지 런타임은 task/도메인 라벨을 주지 않으므로 `SubmissionRouter` 의 D18
     # 가드가 그 라우터를 **거부**한다 — 즉 "수령 당일 첫 명령"이 배포 불가한 산출물을 냈다.
@@ -183,6 +222,7 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
         else "alternative"
     notes.append(f"예측층: AUC {auc:.4f} vs 임계 {threshold} → {predicted} "
                  f"(결정권 없음; 임계값 출처 = {BREAK_EVEN_PROVENANCE})")
+    progress("verifier", {"auc": None if auc is None else round(float(auc), 4)})
 
     # ② 결정층 — **k-fold 교차검증 쌍대 비교** (D57, Phase 20)
     #
@@ -221,6 +261,7 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
                 for name, pol in cands.items():
                     r = run_tier(ds, sel, pol, tier, b_sel)
                     acc.setdefault(name, []).append(np.asarray(r.per_query, dtype=float))
+                progress("fold", {"tier": tier, "rep": rep, "fold": f})
             rq = {n: float(np.concatenate(v).mean()) for n, v in acc.items()}
             rep_winners.append(max(rq, key=rq.get))                 # 이 반복의 승자
             for n, v in acc.items():
@@ -246,6 +287,13 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
         per_tier[tier]["_alt_win_repeats"] = f"{wins}/{reps}"
         per_tier[tier]["_stable"] = bool(stable)
         chosen[tier] = pick
+        progress("tier_done", {"tier": tier, "pick": pick})
+        # ★ D64: tier 하나가 끝날 때마다 중간 판정을 디스크에 남긴다. 끊겨도 이미 끝난
+        # tier 의 비교 결과는 살아 있고, 무엇이 남았는지 알 수 있다.
+        if out_path:
+            _dump({"status": "partial", "chosen_so_far": dict(chosen),
+                   "per_tier_scores": per_tier, "verifier_auc": auc,
+                   "tiers_remaining": [t for t in tiers if t not in chosen]}, out_path)
     notes.append(f"결정층: {kf}-fold × {reps}회 반복 교차검증. 대안 채택 = 크기(>max(margin,"
                  f"{se_k}×SE)) **및** 안정성(반복 과반 승리) 동시 충족 (D57·D61)")
     dec = GateDecision(verifier_auc=None if auc is None else round(float(auc), 4),
@@ -272,10 +320,21 @@ def run_gate(ds, cfg, train_idx, tiers=None, meta=None, seed: int = 0,
         setattr(routers[tier], "scoring_verifier", sv)
     dec.scoring_verifier = sv
     if out_path:
-        p = pathlib.Path(out_path)
-        p.parent.mkdir(parents=True, exist_ok=True)
-        json.dump(dec.record, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        _dump(dec.record, out_path)
     return dec, routers
+
+
+def _dump(obj: dict, path) -> None:
+    p = pathlib.Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    def _plain(o):
+        if isinstance(o, (np.integer,)):
+            return int(o)
+        if isinstance(o, (np.floating,)):
+            return float(o)
+        return str(o)
+    json.dump(obj, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=1,
+              default=_plain)
 
 
 def print_decision(dec: GateDecision):
@@ -296,41 +355,82 @@ def print_decision(dec: GateDecision):
         print(f"    · {n}")
 
 
+USAGE = """사용법
+  python -m src.gate <데이터경로> [옵션]
+
+옵션
+  --config <path>       config yaml (기본 config.yaml)
+  --map k=v             컬럼명 매핑 (예: --map quality=score). 여러 번 사용 가능
+  --quick               3-fold × 1반복 정찰용 (기본 5×3). ★ 먼저 이것으로 파이프라인을
+                        확인하고, 시간이 허락하면 기본 설정으로 다시 돌린다
+  --splits N            결정층 fold 수 (기본 5)
+  --repeats R           반복 교차검증 횟수 (기본 3)
+  --encoder <name>      프롬프트 인코더: hashing | hashing:<dim> | st | st:<model>
+  --scan-encoders       ★ 인코더 후보를 예측기 품질로 먼저 고른다 (D65, §N5/N6)
+  --out <path>          판정 아티팩트 경로 (기본 eval/results/gate_decision.json)
+  --quiet               진행 표시 끄기
+"""
+
+
 def _cli():                                                    # pragma: no cover
     import sys
     import yaml
     from .loader import load_dataset, FieldSpec, validate_dataset
     from .text_encoder import get_encoder
     args = sys.argv[1:]
-    if not args:
+    if not args or args[0] in ("-h", "--help"):
         print(__doc__)
+        print(USAGE)
         return
+
+    def opt(name, default=None):
+        return args[args.index(name) + 1] if name in args else default
+
     path = args[0]
-    cfg_path = args[args.index("--config") + 1] if "--config" in args else "config.yaml"
-    cfg = yaml.safe_load(open(cfg_path, encoding="utf-8"))
+    cfg = yaml.safe_load(open(opt("--config", "config.yaml"), encoding="utf-8"))
     spec = FieldSpec()
-    for a in args:
-        if a.startswith("--map"):
-            pass
     for i, a in enumerate(args):
         if a == "--map":
             key, val = args[i + 1].split("=", 1)
             setattr(spec, key, val)
+    quick = "--quick" in args
+    kf = int(opt("--splits", 3 if quick else N_SPLITS))
+    reps = int(opt("--repeats", 1 if quick else N_REPEATS))
+    out_path = opt("--out", "eval/results/gate_decision.json")
+
     ds, meta = load_dataset(path, cfg, spec)
     validate_dataset(ds)
     if getattr(ds, "features", None) is None or ds.features.shape[1] <= 1:
         # D36: 특성을 만든 **그 인코더**를 데이터셋에 실어 둔다 → LPBRouter.fit() 이 물려받고
         # → SubmissionRouter 가 런타임 텍스트 프롬프트를 같은 공간으로 인코딩할 수 있다.
-        enc = get_encoder("hashing")
-        ds.features = enc.encode(meta["prompts"])
-        ds.text_encoder = enc
-    n = ds.n
-    tr = np.arange(int(0.7 * n))
-    dec, routers = run_gate(ds, cfg, tr, meta=meta,
-                            out_path="eval/results/gate_decision.json")
+        if "--scan-encoders" in args:
+            from .encoder_scan import scan_encoders, default_candidates, apply_encoder
+            rep = scan_encoders(meta["prompts"], ds, np.arange(int(0.7 * ds.n)),
+                                default_candidates(), verbose="--quiet" not in args)
+            apply_encoder(ds, meta["prompts"], rep.best_encoder)
+            print(rep.table())
+        else:
+            # ★ D65: **배포 기본값만** hashing:512 다. `get_encoder("hashing")`(=96) 은
+            # 그대로 두어 커밋된 아티팩트 전체가 재현된다 — 전역 기본값을 바꾸면 20 Phase 치
+            # 수치가 한꺼번에 무효가 되고, 그 대가로 얻는 것은 합성 세계의 +0.0054 다.
+            # 근거(`probe_encoder_axis.json`, 쌍대 3-fold): 제출 대상 selective3 가
+            # +0.0054 (요구 0.0050) 로 D21 문턱을 **통과**, 세 tier 전부 같은 부호.
+            # 단 LPB 단독은 −0.0013 (fast −2.0×SE) 로 **회귀**한다 — 그래서 이 값은
+            # "정답"이 아니라 **기본 후보**이고, `--scan-encoders` 가 실데이터에서 재판정한다.
+            enc = get_encoder(opt("--encoder", "hashing:512"))
+            ds.features = enc.encode(meta["prompts"])
+            ds.text_encoder = enc
+
+    tr = np.arange(int(0.7 * ds.n))
+    n_units = len(cfg["tiers"]) * kf * reps
+    prog = None if "--quiet" in args else make_stderr_progress(n_units)
+    print(f"  결정층 구성: {kf}-fold × {reps}반복 × {len(cfg['tiers'])} tier "
+          f"= 라우터 적합 {n_units * 3}회" + ("  (--quick)" if quick else ""))
+    dec, routers = run_gate(ds, cfg, tr, meta=meta, out_path=out_path,
+                            n_splits=kf, n_repeats=reps, progress=prog)
     print_decision(dec)
     print(f"\n  배포 라우터: {{tier: {type(list(routers.values())[0]).__name__}}} "
-          f"→ eval/results/gate_decision.json")
+          f"→ {out_path}")
 
 
 if __name__ == "__main__":                                     # pragma: no cover
